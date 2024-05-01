@@ -72,7 +72,7 @@ export function getArticleData(articleIdentifier, articlesDirectoryPath) {
  * @param {string} articlesDirectoryPath - The path to the directory containing the articles.
  * @returns {Object} - The article data including slug, metadata, and content.
  */
-export function getArticleDataWithBody(
+export async function getArticleDataWithBody(
   articleIdentifier,
   articlesDirectoryPath
 ) {
