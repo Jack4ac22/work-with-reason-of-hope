@@ -1,5 +1,8 @@
+// import { getAllBlogArticles } from "@/util/articles-functions";
 export default function Page() {
+  // const articles = getAllBlogArticles();
   return (
-    <div></div>
+    <div><article>
+    </article></div>
   );
 }

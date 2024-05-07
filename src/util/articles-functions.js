@@ -130,7 +130,7 @@ export function getArticleDataWithRelatedArticles(
 export function getAllArticles(articlesDirectoryPath, orderedBy = "date") {
   const articleFiles = getArticleFiles(articlesDirectoryPath);
   const allArticles = articleFiles.map((articleFile) => {
-    return getArticleData(articleFile, articlesDirectoryPath);
+    return getArticleDataWithBody(articleFile, articlesDirectoryPath);
   });
 
   return orderArticlesBy(allArticles, orderedBy);
@@ -142,12 +142,12 @@ export function getAllArticles(articlesDirectoryPath, orderedBy = "date") {
  * @returns {Array} An array of all blog articles.
  */
 export function getAllBlogArticles() {
-  const creationArticles = getAllArticles("/content/creation");
-  const logicArticles = getAllArticles("/content/logic");
-  const objectionArticles = getAllArticles("/content/objections");
-  const publicationArticles = getAllArticles("/content/publications");
-  const wordArticles = getAllArticles("/content/word");
-  const studiesArticles = getAllArticles("/content/biblical-studies");
+  const creationArticles = getAllArticles("/src/content/creation");
+  const logicArticles = getAllArticles("/src/content/logic");
+  const objectionArticles = getAllArticles("/src/content/objections");
+  const publicationArticles = getAllArticles("/src/content/publications");
+  const wordArticles = getAllArticles("/src/content/word");
+  const studiesArticles = getAllArticles("/src/content/biblical-studies");
 
   const adjustedCreationArticles = creationArticles.map((article) => {
     return { ...article, slug: "creation/" + article.slug };
@@ -176,7 +176,8 @@ export function getAllBlogArticles() {
     ...adjustedWordArticles,
     ...adjustedStudiesArticles,
   ];
-
+  const jsonFilePath = path.join(process.cwd(), "articles.json");
+  fs.writeFileSync(jsonFilePath, JSON.stringify(allArticles));
   return allArticles;
 }
 
