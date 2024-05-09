@@ -1,6 +1,6 @@
 'use client'
 import { useParams } from "next/navigation";
-import allArticles from '@/content/articles.json'
+import { allArticlesData } from '@/util/updated-articles-functions';
 import Link from 'next/link';
 export default function Page() {
   const params = useParams();
