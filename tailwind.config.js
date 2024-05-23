@@ -12,11 +12,11 @@ module.exports = {
         serif: ["Merriweather", "serif"],
       },
       colors: {
-        lightShade: "#F8F6F6",
-        lightAccent: "#AFB7C5",
-        mainBrand: "#645D64",
-        darkAccent: "#8993BB",
-        darkShade: "#222541",
+        lightShade: "#F7F4F5",
+        lightAccent: "#57A69B",
+        mainBrand: "#B9A6B5",
+        darkAccent: "#DE7431",
+        darkShade: "#4A7D73",
       },
       gridTemplateColumns: {
         "70/30": "70% 28%",
