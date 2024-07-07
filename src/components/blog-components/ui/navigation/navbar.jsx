@@ -4,7 +4,7 @@ import { FaBars, FaAngleDoubleUp } from "react-icons/fa";
 import MenueLogo from "@/components/blog-components/ui/navigation/menue-logo";
 import { usePathname } from "next/navigation";
 import Link from 'next/link';
-import menueElements from "@/assets/menue-elements";
+
 
 export default function NavBar() {
   const path = usePathname();
