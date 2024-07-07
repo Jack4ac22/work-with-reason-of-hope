@@ -1,7 +1,8 @@
 "use client";
 import { useState } from 'react'
-import { FaBars, FaAngleDoubleUp } from "react-icons/fa";
-import MenueLogo from "@/components/blog-components/ui/navigation/menue-logo";
+import { FaBars } from "react-icons/fa";
+import logoImage from "@/assets/images/blog/ROH.png"
+import Image from 'next/image'
 import { usePathname } from "next/navigation";
 import Link from 'next/link';
 
@@ -11,16 +12,27 @@ export default function NavBar() {
   const menue = [
     { title: "Home", href: "/", active: true, smallScreen: true },
     { title: "About", href: "/about", active: true, smallScreen: true },
-    { title: "Projects", href: "/projects", active: true, smallScreen: true, subElements: [
-      { title: "Project 1", href: "/projects/project-1", active: true, smallScreen: true },
-      { title: "Project 2", href: "/projects/project-2", active: true, smallScreen: true },
-      { title: "Project 3", href: "/projects/project-3", active: true, smallScreen: true },
-    ] },
-
+    {
+      title: "Projects", href: "/projects", active: true, smallScreen: true, subElements: [
+        { title: "Project 1", href: "/projects/project-1", active: true, smallScreen: true },
+        { title: "Project 2", href: "/projects/project-2", active: true, smallScreen: true },
+        { title: "Project 3", href: "/projects/project-3", active: true, smallScreen: true },
+      ]
+    },
   ];
 
 
-
+  function MenueLogo() {
+    return (
+      <Link className="flex flex-shrink-0 items-center hover:translate-y-0.5 duration-300" href="/">
+        <Image
+          className="h-10 w-auto ml-2"
+          src={logoImage}
+          alt="Reason Of Hope Logo"
+        />
+      </Link>
+    );
+  }
   function SmMenueButton({ handleMobileMenuOpen }) {
     return (
       <button
