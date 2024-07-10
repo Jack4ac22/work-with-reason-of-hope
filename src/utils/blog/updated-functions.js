@@ -1,40 +1,18 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { getArticlesByTagComined } from "./tags-functions";
-import { randomArticlesFromArray } from "./general-functions";
-import { all } from "remark-rehype";
 
-function consoleLog(message) {
-  console.log("****************************************");
-  console.log("****************************************");
-  console.log(message);
-  console.log("****************************************");
-  console.log("****************************************");
-}
+const articlesDirectoryPath = [
+  "creation",
+  "logic",
+  "objections",
+  "publications",
+  "word",
+  "biblical-studies",
+];
 
 /**
- * Orders the articles array by the specified property.
- *
- * @param {Array} articles - The array of articles to be ordered.
- * @param {string} orderBy - The property to order the articles by.
- * @returns {Array} - The ordered array of articles.
- */
-
-function orderArticlesBy(articles, orderBy) {
-  try {
-    return articles.sort((articleA, articleB) =>
-      articleA[orderBy] > articleB[orderBy] ? 1 : -1
-    );
-  } catch (error) {
-    consoleLog(error);
-  } finally {
-    return articles;
-  }
-}
-
-/**
- * Retrieves the list of article files from the specified directory path.
+ * Retrieves the list of article files from the specified directory.
  *
  * @param {string} articlesDirectoryPath - The path to the directory containing the article files.
  * @returns {string[]} - An array of article file names.
@@ -48,7 +26,7 @@ export function getArticleFiles(articlesDirectoryPath) {
  * Retrieves the data of an article based on its identifier.
  * @param {string} articleIdentifier - The identifier of the article.
  * @param {string} articlesDirectoryPath - The path to the directory containing the articles.
- * @returns {Object} - The article data, including the slug and other metadata.
+ * @returns {Object} - The article data.
  */
 export function getArticleData(articleIdentifier, articlesDirectoryPath) {
   const articleSlug = articleIdentifier.replace(/\.md$/, "");
@@ -58,34 +36,18 @@ export function getArticleData(articleIdentifier, articlesDirectoryPath) {
     `${articleSlug}.md`
   );
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  const { data } = matter(fileContent);
-  const articleData = {
-    slug: articleSlug,
-    ...data,
-  };
-  return articleData;
-}
-
-/**
- * Retrieves article data with body content.
- * @param {string} articleIdentifier - The identifier of the article.
- * @param {string} articlesDirectoryPath - The path to the directory containing the articles.
- * @returns {Object} - The article data including slug, metadata, and content.
- */
-export function getArticleDataWithBody(
-  articleIdentifier,
-  articlesDirectoryPath
-) {
-  const articleSlug = articleIdentifier.replace(/\.md$/, "");
-  const filePath = path.join(
-    process.cwd(),
-    articlesDirectoryPath,
-    `${articleSlug}.md`
-  );
-  const fileContent = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(fileContent);
+  const dateInformations = data.date.split("-");
+  const articleDateInformations = {
+    year: dateInformations[0],
+    month: dateInformations[1],
+    day: dateInformations[2],
+  };
   const articleData = {
     slug: articleSlug,
+    year: articleDateInformations.year,
+    month: articleDateInformations.month,
+    day: articleDateInformations.day,
     ...data,
     content: content,
   };
@@ -93,210 +55,299 @@ export function getArticleDataWithBody(
 }
 
 /**
- * Retrieves article data along with related articles.
- *
- * @param {string} articleIdentifier - The identifier of the article.
- * @param {string} articlesDirectoryPath - The path to the directory containing the articles.
- * @param {number} [related=3] - The number of related articles to retrieve.
- * @returns {Object} - The article data along with related articles.
+ * Retrieves all articles data.
+ * @returns {Promise<Array>} The array of articles data.
  */
-export function getArticleDataWithRelatedArticles(
-  articleIdentifier,
-  articlesDirectoryPath,
-  related = 3
-) {
-  const articleSlug = articleIdentifier.replace(/\.md$/, "");
-  const filePath = path.join(
-    process.cwd(),
-    articlesDirectoryPath,
-    `${articleSlug}.md`
-  );
-  const fileContent = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(fileContent);
-  const relatedArticles = getRelatedArticles(
-    data.tags,
-    related,
-    articleIdentifier
-  );
-  const articleData = {
-    slug: articleSlug,
-    related: relatedArticles,
-    ...data,
-    content: content,
-  };
-  return articleData;
-}
-
-export function getAllArticles(articlesDirectoryPath, orderedBy = "date") {
-  const articleFiles = getArticleFiles(articlesDirectoryPath);
-  const allArticles = articleFiles.map((articleFile) => {
-    return getArticleData(articleFile, articlesDirectoryPath);
-  });
-
-  return orderArticlesBy(allArticles, orderedBy);
+export async function allArticlesData() {
+  const jsonFilePath = path.join(process.cwd(), "/src/assets/articles.json");
+  // check if the file exists, its json and it has a field with the key "lastUpdate"
+  if (
+    !fs.existsSync(jsonFilePath) ||
+    JSON.parse(fs.readFileSync(jsonFilePath)).length === 0
+  ) {
+    let articlesInJson = [];
+    articlesDirectoryPath.map((directory) => {
+      const articleFiles = getArticleFiles(`/src/assets/content/${directory}`);
+      const articles = articleFiles.map((articleFile) => {
+        return getArticleData(articleFile, `/src/assets/content/${directory}`);
+      });
+      const publishedArticles = articles.filter(
+        (article) => article.status === "published"
+      );
+      publishedArticles.length > 0
+        ? (articlesInJson = [...articlesInJson, ...articles])
+        : null;
+    });
+    fs.writeFileSync(jsonFilePath, JSON.stringify(articlesInJson));
+    return articlesInJson;
+  } else {
+    // read  the file and return its content
+    const fileContent = fs.readFileSync(jsonFilePath, "utf-8");
+    const articlesInJson = JSON.parse(fileContent);
+    return articlesInJson;
+  }
 }
 
 /**
- * Retrieves all blog articles from different content directories.
- *
- * @returns {Array} An array of all blog articles.
+ * Retrieves the available years of articles in ascending or descending order.
+ * @param {string} order - The order in which the years should be sorted. Possible values are "asc" (ascending) or "desc" (descending). Default is "asc".
+ * @returns {Promise<number[]>} An array of available years.
  */
-export function getAllBlogArticles() {
-  const creationArticles = getAllArticles("src/assets/content/creation");
-  const logicArticles = getAllArticles("src/assets/content/logic");
-  const objectionArticles = getAllArticles("src/assets/content/objections");
-  const publicationArticles = getAllArticles("src/assets/content/publications");
-  const wordArticles = getAllArticles("src/assets/content/word");
-  const studiesArticles = getAllArticles("src/assets/content/biblical-studies");
-
-  const adjustedCreationArticles = creationArticles.map((article) => {
-    return { ...article, slug: "creation/" + article.slug };
-  });
-  const adjustedLogicArticles = logicArticles.map((article) => {
-    return { ...article, slug: "logic/" + article.slug };
-  });
-  const adjustedObjectionArticles = objectionArticles.map((article) => {
-    return { ...article, slug: "objections/" + article.slug };
-  });
-  const adjustedPublicationArticles = publicationArticles.map((article) => {
-    return { ...article, slug: "publications/" + article.slug };
-  });
-  const adjustedWordArticles = wordArticles.map((article) => {
-    return { ...article, slug: "words/" + article.slug };
-  });
-  const adjustedStudiesArticles = studiesArticles.map((article) => {
-    return { ...article, slug: "studies/" + article.slug };
-  });
-
-  const allArticles = [
-    ...adjustedCreationArticles,
-    ...adjustedLogicArticles,
-    ...adjustedObjectionArticles,
-    ...adjustedPublicationArticles,
-    ...adjustedWordArticles,
-    ...adjustedStudiesArticles,
-  ];
-
-  return allArticles;
+export async function availableYears(order = "asc") {
+  let articles = await allArticlesData();
+  let years = articles.map((article) => article.year);
+  years = [...new Set(years)];
+  years.sort((a, b) => (order === "desc" ? b - a : a - b));
+  return years;
 }
 
-export function getArticlesByTag(
-  tag = "",
-  articlesDirectoryPath,
-  orderedBy = "date"
-) {
-  return orderArticlesBy(
-    getAllArticles(articlesDirectoryPath).filter((article) => {
-      if (article && article.tags) {
-        return article.tags.includes(tag);
-      }
-      return false;
-    }),
-    orderedBy
+/**
+ * Retrieves articles data for a specific year.
+ *
+ * @param {number, string} year - The year for which to retrieve articles data.
+ * @returns {Promise<Array>} - A promise that resolves to an array of articles data for the specified year.
+ */
+export async function yearData(year) {
+  let articles = await allArticlesData();
+  articles = articles.filter((article) => article.year === year.toString());
+  return articles;
+}
+
+/**
+ * Retrieves the available months for a given year from the articles data.
+ * @param {number, string} year - The year for which to retrieve the available months.
+ * @param {string} [order="asc"] - The order in which the months should be sorted. Defaults to "asc".
+ * @returns {Promise<Array<number>>} - A promise that resolves to an array of available months.
+ */
+export async function availableMonths(year, order = "asc") {
+  let articles = await allArticlesData();
+  articles = articles.filter((article) => article.year === year.toString());
+  let months = articles.map((article) => article.month);
+  months = [...new Set(months)];
+  months.sort((a, b) => (order === "desc" ? b - a : a - b));
+  return months;
+}
+
+/**
+ * Retrieves articles data for a specific month and year.
+ *
+ * @param {number} year - The year of the articles.
+ * @param {number} month - The month of the articles.
+ * @returns {Promise<Array>} - A promise that resolves to an array of articles.
+ */
+export async function monthData(year, month) {
+  let articles = await allArticlesData();
+  articles = articles.filter(
+    (article) =>
+      article.year === year.toString() && article.month === month.toString()
   );
+  return articles;
 }
 
-export function getArticlesByCategory(
-  category = "",
-  articlesDirectoryPath,
-  orderedBy = "date"
-) {
-  return orderArticlesBy(
-    getAllArticles(articlesDirectoryPath).filter((article) => {
-      if (article && article.categories) {
-        return article.categories.includes(category);
-      }
-      return false;
-    }),
-    orderedBy
+/**
+ * Retrieves the available days for a given year and month.
+ * @param {number} year - The year.
+ * @param {number} month - The month.
+ * @param {string} [order="asc"] - The order in which the days should be sorted. Defaults to "asc".
+ * @returns {Promise<number[]>} - An array of available days.
+ */
+export async function availableDays(year, month, order = "asc") {
+  let articles = await allArticlesData();
+  articles = articles.filter(
+    (article) =>
+      article.year === year.toString() && article.month === month.toString()
   );
+  let days = articles.map((article) => article.day);
+  days = [...new Set(days)];
+  days.sort((a, b) => (order === "desc" ? b - a : a - b));
+  return days;
 }
-
-export function getArticlesBySearchTerm(
-  searchTerm = "",
-  articlesDirectoryPath,
-  orderedBy = "date"
-) {
-  return orderArticlesBy(
-    getAllArticles(articlesDirectoryPath).filter((article) => {
-      if (article && article.title) {
-        return article.title.includes(searchTerm);
-      }
-      return false;
-    }),
-    orderedBy
+/**
+ * Retrieves articles for a specific day.
+ *
+ * @param {number} year - The year of the articles.
+ * @param {number} month - The month of the articles.
+ * @param {number} day - The day of the articles.
+ * @returns {Promise<Array>} - A promise that resolves to an array of articles.
+ */
+export async function dayData(year, month, day) {
+  let articles = await allArticlesData();
+  articles = articles.filter(
+    (article) =>
+      article.year === year.toString() &&
+      article.month === month.toString() &&
+      article.day === day.toString()
   );
+  return articles;
 }
 
-export function getArticlesByTitleSearch(
-  searchTerm = "",
-  articlesDirectoryPath,
-  orderedBy = "date"
-) {
-  return orderArticlesBy(
-    getAllArticles(articlesDirectoryPath).filter((article) => {
-      if (article && article.title) {
-        return article.title.includes(searchTerm);
-      }
-      return false;
-    }),
-    orderedBy
+/**
+ * Retrieves the available slugs for articles published on a specific date.
+ * @param {number} year - The year of the articles.
+ * @param {number} month - The month of the articles.
+ * @param {number} day - The day of the articles.
+ * @param {string} [order="asc"] - The order in which the slugs should be sorted. Defaults to "asc".
+ * @returns {Promise<string[]>} - An array of unique slugs for the articles.
+ */
+export async function availableSlugs(year, month, day, order = "asc") {
+  let articles = await allArticlesData();
+  articles = articles.filter(
+    (article) =>
+      article.year === year.toString() &&
+      article.month === month.toString() &&
+      article.day === day.toString()
   );
+  let slugs = articles.map((article) => article.slug);
+  slugs = [...new Set(slugs)];
+  slugs.sort((a, b) => (order === "desc" ? b - a : a - b));
+  return slugs;
 }
 
-export function getAllArticleTags(articlesDirectoryPath) {
-  const allArticles = getAllArticles(articlesDirectoryPath);
-  const allTags = [];
-  allArticles.forEach((article) => {
-    if (article && article.tags) {
-      article.tags.forEach((tag) => {
-        const tagIndex = allTags.findIndex(
-          (tagObject) => tagObject.tag === tag
-        );
-        if (tagIndex === -1) {
-          allTags.push({ tag: tag, count: 1 });
-        } else {
-          allTags[tagIndex].count++;
-        }
-      });
-    }
+/**
+ * Retrieves the full path data for an article based on the provided parameters.
+ *
+ * @param {number} year - The year of the article.
+ * @param {number} month - The month of the article.
+ * @param {number} day - The day of the article.
+ * @param {string} slug - The slug of the article.
+ * @returns {Promise<Array>} - A promise that resolves to an array of articles matching the provided parameters.
+ */
+export async function fullPathData(year, month, day, slug) {
+  let articles = await allArticlesData();
+  articles = articles.filter(
+    (article) =>
+      article.year === year.toString() &&
+      article.month === month.toString() &&
+      article.day === day.toString() &&
+      article.slug === slug
+  );
+  return articles;
+}
+
+/**
+ * Retrieves article data based on the provided slug.
+ *
+ * @param {string} slug - The slug of the article.
+ * @returns {Promise<Array>} - A promise that resolves to an array of articles matching the provided slug.
+ */
+export async function articleData(slug) {
+  slug = slug.trim();
+  let articles = await allArticlesData();
+  articles = articles.filter((article) => article.slug === slug.toString());
+  return articles;
+}
+
+/**
+ * Retrieves the available tags from all articles data.
+ * @param {string} order - The order in which the tags should be sorted. Defaults to "asc".
+ * @returns {Promise<Array<string>>} - A promise that resolves to an array of unique tags.
+ */
+export async function availableTags(order = "asc") {
+  let articles = await allArticlesData();
+  let availableTags = articles.map((article) => article.tags);
+  let tags = articles.map((article) => article.tags);
+  availableTags = [...tags, ...availableTags];
+  availableTags = availableTags.flat();
+  availableTags = [...new Set(availableTags)];
+  availableTags.sort((a, b) => (order === "desc" ? b - a : a - b));
+  return availableTags;
+}
+
+/**
+ * Retrieves the available tags with their respective count of articles.
+ * @returns {Promise<Array<{tag: string, count: number}>>} The array of tags with their respective count.
+ */
+export async function availableTagsWithCount() {
+  let articles = await allArticlesData();
+  let allTags = await availableTags();
+  let tagsWithCount = allTags.map((tag) => {
+    let count = articles.filter((article) => article.tags.includes(tag)).length;
+    return { tag: tag, count: count };
   });
-  return allTags.sort((tagA, tagB) => (tagA.count < tagB.count ? 1 : -1));
+  return tagsWithCount;
 }
 
-export function getAllArticleCategories(articlesDirectoryPath) {
-  const allArticles = getAllArticles(articlesDirectoryPath);
-  const allCategories = [];
-  allArticles.forEach((article) => {
-    if (article && article.categories) {
-      article.categories.forEach((category) => {
-        const categoryIndex = allCategories.findIndex(
-          (categoryObject) => categoryObject.category === category
-        );
-        if (categoryIndex === -1) {
-          allCategories.push({ category: category, count: 1 });
-        } else {
-          allCategories[categoryIndex].count++;
-        }
-      });
-    }
+/**
+ * Retrieves articles that have a specific tag.
+ *
+ * @param {string} tag - The tag to filter articles by.
+ * @returns {Promise<Array>} - A promise that resolves to an array of articles.
+ */
+export async function articlesByTag(tag) {
+  tag = tag.trim();
+  let articles = await allArticlesData();
+  articles = articles.filter((article) => article.tags.includes(tag));
+  return articles;
+}
+
+/**
+ * Retrieves articles based on the provided tags.
+ * @param {string[]} tags - An array of tags to filter the articles by.
+ * @returns {Promise<Object[]>} - A promise that resolves to an array of articles matching the provided tags.
+ */
+export async function articlesByTags(tags) {
+  let articles = await allArticlesData();
+  articles = articles.filter((article) => {
+    return tags.every((tag) => article.tags.includes(tag));
   });
-  return allCategories.sort((categoryA, categoryB) =>
-    categoryA.count < categoryB.count ? 1 : -1
-  );
+  return articles;
 }
 
-export function getRelatedArticles(tags, number = 3, articleSlug = "") {
-  const relatedArticles = [];
-  const allArticles = getAllBlogArticles();
-  tags.forEach((tag) => {
-    const filteredArticles = allArticles.filter(
-      (article) =>
-        article.tags &&
-        article.tags.includes(tag) &&
-        article.slug !== articleSlug
+/**
+ * Retrieves the available categories from the articles data.
+ * @returns {Promise<string[]>} An array of unique category names.
+ */
+export async function availableCategories() {
+  let articles = await allArticlesData();
+  let categories = articles.map((article) => article.categories);
+  categories = categories.flat();
+  categories = [...new Set(categories)];
+  return categories;
+}
+
+/**
+ * Retrieves the available categories with their respective article counts.
+ * @returns {Promise<Array<{category: string, count: number}>>} An array of objects containing the category name and the count of articles in that category.
+ */
+export async function availableCategoriesWithCount() {
+  let articles = await allArticlesData();
+  let allCategories = await availableCategories();
+  let categoriesWithCount = allCategories.map((category) => {
+    let count = articles.filter((article) =>
+      article.categories.includes(category)
+    ).length;
+    return { category: category, count: count };
+  });
+  return categoriesWithCount;
+}
+
+/**
+ * Retrieves articles by category.
+ *
+ * @param {string} category - The category to filter articles by.
+ * @returns {Promise<Array>} - A promise that resolves to an array of articles.
+ */
+export async function articlesByCategory(category) {
+  category = category.trim();
+  let articles = await allArticlesData();
+  articles = articles.filter((article) =>
+    article.categories.includes(category)
+  );
+  return articles;
+}
+
+/**
+ * Retrieves articles filtered by categories.
+ *
+ * @param {string[]} categories - An array of category names.
+ * @returns {Promise<Object[]>} - A promise that resolves to an array of articles.
+ */
+export async function articlesByCategories(categories) {
+  let articles = await allArticlesData();
+  articles = articles.filter((article) => {
+    return categories.every((category) =>
+      article.categories.includes(category)
     );
-    relatedArticles.push(...filteredArticles);
   });
-  return randomArticlesFromArray(relatedArticles, number);
+  return articles;
 }
