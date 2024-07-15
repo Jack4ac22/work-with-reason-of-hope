@@ -58,7 +58,7 @@ export function getArticleData(articleIdentifier, articlesDirectoryPath) {
  * Retrieves all articles data.
  * @returns {Promise<Array>} The array of articles data.
  */
-export async function allArticlesData() {
+export function allArticlesData() {
   const jsonFilePath = path.join(process.cwd(), "/src/assets/articles.json");
   // check if the file exists, its json and it has a field with the key "lastUpdate"
   if (
