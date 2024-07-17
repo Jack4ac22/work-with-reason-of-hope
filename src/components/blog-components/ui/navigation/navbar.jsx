@@ -29,6 +29,7 @@ export default function NavBar() {
           className="h-10 w-auto ml-2"
           src={logoImage}
           alt="Reason Of Hope Logo"
+          priority={true}
         />
       </Link>
     );

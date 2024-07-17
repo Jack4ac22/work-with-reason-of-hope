@@ -43,11 +43,15 @@ export function getArticleData(articleIdentifier, articlesDirectoryPath) {
     month: dateInformations[1],
     day: dateInformations[2],
   };
+  const isBook = articlesDirectoryPath.includes("publications");
+  const featured = data.featured ? data.featured : false;
   const articleData = {
     slug: articleSlug,
     year: articleDateInformations.year,
     month: articleDateInformations.month,
     day: articleDateInformations.day,
+    isBook: isBook,
+    featured: featured,
     ...data,
     content: content,
   };
@@ -60,7 +64,6 @@ export function getArticleData(articleIdentifier, articlesDirectoryPath) {
  */
 export function allArticlesData() {
   const jsonFilePath = path.join(process.cwd(), "/src/assets/articles.json");
-  // check if the file exists, its json and it has a field with the key "lastUpdate"
   if (
     !fs.existsSync(jsonFilePath) ||
     JSON.parse(fs.readFileSync(jsonFilePath)).length === 0
