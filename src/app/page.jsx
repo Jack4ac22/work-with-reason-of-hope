@@ -39,7 +39,7 @@ export default function Home() {
               {/* Read more button */}
               <a href={`/blog/${article.slug}`} className="mt-4 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Read More</a>
               {/* Categories and tags section */}
-              <div className="flex flex-row flex-wrap mt-2 border rounded-md p-2 overflow-x-scroll">
+              <div className="flex flex-row flex-wrap border rounded-md p-2 overflow-x-scroll">
                 {article.categories.map((category) => (
                   <Link key={category} href={`/blog/categories/${category}`}>
                     <span key={category} className="bg-lightShade dark:bg-darkShade text-darkShade dark:text-lightShade rounded-md m-1">{category}</span>
