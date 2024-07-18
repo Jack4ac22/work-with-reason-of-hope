@@ -5,7 +5,7 @@ import Link from "next/link";
 function PillBadge(props) {
   return (
     <Link href={`${props.link}`} key={props.key}>
-      <span class={`tracking-wider px-4 py-1 text-sm rounded leading-loose mx-2 font-semibold bg-${props.bg} dark:bg-${props.dark_pd}`} title="">
+      <span className={`tracking-wider px-4 py-1 text-sm rounded leading-loose mx-2 font-semibold bg-${props.bg} dark:bg-${props.dark_pd}`} title="">
         {props.title}
       </span>
     </Link>

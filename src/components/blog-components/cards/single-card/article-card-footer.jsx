@@ -15,13 +15,19 @@ export default function ArticleCardFooter({ article }) {
   });
   const combinedList = [...categoriesList, ...tagsList];
   return (
-    <div className="absolute bottom-0 flex flex-nowrap overflow-x-scroll w-full my-2 bg-lightShade bg-opacity-15 group">
+    <div className="group absolute bottom-0 flex flex-nowrap overflow-x-scroll
+    w-full my-2
+    bg-lightShade bg-opacity-15">
       {
         combinedList.map((item, index) => {
           return (
-            <Link href={item.link} key={`${index}_${item.title}`} className="group-hover: bg-darkShade group">
-              <span className="mx-2 p-2 text-nowrap text-lightShade group-hover:brightness-100 rounded-xl bg-darkAccent">
-                {item.title.replace(/-/g, ' ')}
+            <Link href={item.link} key={`${index}_${item.title}`} className="">
+              <span className="inline-flex items-center m-2 px-3 py-1 text-nowrap text-sm
+              bg-darkAccent text-darkShade
+              rounded-full">
+                <span className="ml-1">
+                  {item.title.replace(/-/g, ' ')}
+                </span>
               </span>
             </Link>
           )

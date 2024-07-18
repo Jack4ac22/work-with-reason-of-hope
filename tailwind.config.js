@@ -105,11 +105,32 @@ module.exports = {
       animation: {
         "spin-slow": "spin 3s linar infinite",
         wigle: "wigle 1s ease-in-out infinite",
+        slideDownAndAppear: "slideDownAndAppear 1s ease-in-out",
+        slideDown: "slideDown 1s ease-in-out",
+        slideUpAndAppear: "slideUpAndAppear 1s ease-in-out",
+        slideUp: "slideUp 1s ease-in-out",
+        appearAndWiggle: "wigle 1s ease-in-out, slideDownAndAppear 1s ease-in-out",
       },
       keyframes: {
         wigle: {
           "0%,100%": { transform: "rotate(0deg)", opacity: 1, scale: 1 },
           "50%": { transform: "rotate(180deg)", opacity: 0.8, scale: 1.1 },
+        },
+        slideDownAndAppear:{
+          "0%": { transform: "translateY(-100%)", opacity: 0 },
+          "100%": { transform: "translateY(0)", opacity: 1 }
+        },
+        slideDown: {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        slideUpAndAppear: {
+          "0%": { transform: "translateY(100%)", opacity: 0 },
+          "100%": { transform: "translateY(0)", opacity: 1 },
+        },
+        slideUp: {
+          "0%": { transform: "translateY(100%)" },
+          "100%": { transform: "translateY(0)" },
         },
       },
       spacing: {
@@ -121,9 +142,13 @@ module.exports = {
       },
       aspectRatio: {
         '16/9': '16 / 9',
+      },
+      transitionDelay: {
+        '2000': '2000ms',
+        '3000': '3000ms',
       }
-    },
-  },
-  plugins: [],
+        },
+      },
+      plugins: [],
   // darkMode: "class",
 };
