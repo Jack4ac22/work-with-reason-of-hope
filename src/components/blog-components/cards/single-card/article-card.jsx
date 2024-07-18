@@ -6,7 +6,7 @@ export default function ArticleCard({ article }) {
     <>
       <div className="w-64 h-96 border rounded-xl relative">
         <div className="flex flex-col justify-between group">
-          <ArticleCardHeader article={article}/>
+          <ArticleCardHeader article={article} />
           <ArticleCardBody article={article} />
           <ArticleCardFooter article={article} />
         </div>

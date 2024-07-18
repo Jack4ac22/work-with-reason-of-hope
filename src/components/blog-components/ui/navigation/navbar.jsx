@@ -12,6 +12,7 @@ export default function NavBar() {
   const menue = [
     { title: "Home", href: "/", active: true, smallScreen: true },
     { title: "About", href: "/about", active: true, smallScreen: true },
+    { title: "articles", href: "/articles", active: true, smallScreen: true },
     {
       title: "Projects", href: "/projects", active: true, smallScreen: true, subElements: [
         { title: "Project 1", href: "/projects/project-1", active: true, smallScreen: true },
