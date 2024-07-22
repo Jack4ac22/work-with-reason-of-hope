@@ -7,13 +7,13 @@ export default function ImageMappingComponent({ objectElement }) {
     e.preventDefault();
     setLayoverObject({
       type: "image",
-      link: objectElement.src,
+      link: objectElement.src + objectElement.alt,
     });
   }
   return (
     <>
       <Image src={`/blog_images/${objectElement.src}`} alt={objectElement.alt}
-        className="object-cover rounded-t-xl md:rounded-tr-none md:rounded-l-xl w-full md:w-2/5"
+        className="object-cover rounded-t-xl md:rounded-tr-none md:rounded-l-xl w-full md:max-w-xl lg:max-w-4xl mx-auto"
         sizes="100vw"
         height={0}
         width={0}
