@@ -1,4 +1,4 @@
-import { Markazi_Text, Roboto } from "next/font/google";
+import {Markazi_Text, Roboto } from "next/font/google";
 import "@/assets/styles/globals.css";
 import NavBar from "@/components/blog-components/ui/navigation/navbar";
 import LayOverSection from "@/components/blog-components/ui/layover/layover";

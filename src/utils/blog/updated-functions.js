@@ -96,8 +96,8 @@ export function allArticlesData() {
  * @param {string} order - The order in which the years should be sorted. Possible values are "asc" (ascending) or "desc" (descending). Default is "asc".
  * @returns {Promise<number[]>} An array of available years.
  */
-export async function availableYears(order = "asc") {
-  let articles = await allArticlesData();
+export  function availableYears(order = "asc") {
+  let articles =  allArticlesData();
   let years = articles.map((article) => article.year);
   years = [...new Set(years)];
   years.sort((a, b) => (order === "desc" ? b - a : a - b));
@@ -110,8 +110,8 @@ export async function availableYears(order = "asc") {
  * @param {number, string} year - The year for which to retrieve articles data.
  * @returns {Promise<Array>} - A promise that resolves to an array of articles data for the specified year.
  */
-export async function yearData(year) {
-  let articles = await allArticlesData();
+export  function yearData(year) {
+  let articles =  allArticlesData();
   articles = articles.filter((article) => article.year === year.toString());
   return articles;
 }
@@ -122,8 +122,8 @@ export async function yearData(year) {
  * @param {string} [order="asc"] - The order in which the months should be sorted. Defaults to "asc".
  * @returns {Promise<Array<number>>} - A promise that resolves to an array of available months.
  */
-export async function availableMonths(year, order = "asc") {
-  let articles = await allArticlesData();
+export  function availableMonths(year, order = "asc") {
+  let articles =  allArticlesData();
   articles = articles.filter((article) => article.year === year.toString());
   let months = articles.map((article) => article.month);
   months = [...new Set(months)];
@@ -138,8 +138,8 @@ export async function availableMonths(year, order = "asc") {
  * @param {number} month - The month of the articles.
  * @returns {Promise<Array>} - A promise that resolves to an array of articles.
  */
-export async function monthData(year, month) {
-  let articles = await allArticlesData();
+export  function monthData(year, month) {
+  let articles =  allArticlesData();
   articles = articles.filter(
     (article) =>
       article.year === year.toString() && article.month === month.toString()
@@ -154,8 +154,8 @@ export async function monthData(year, month) {
  * @param {string} [order="asc"] - The order in which the days should be sorted. Defaults to "asc".
  * @returns {Promise<number[]>} - An array of available days.
  */
-export async function availableDays(year, month, order = "asc") {
-  let articles = await allArticlesData();
+export  function availableDays(year, month, order = "asc") {
+  let articles =  allArticlesData();
   articles = articles.filter(
     (article) =>
       article.year === year.toString() && article.month === month.toString()
@@ -173,8 +173,8 @@ export async function availableDays(year, month, order = "asc") {
  * @param {number} day - The day of the articles.
  * @returns {Promise<Array>} - A promise that resolves to an array of articles.
  */
-export async function dayData(year, month, day) {
-  let articles = await allArticlesData();
+export  function dayData(year, month, day) {
+  let articles =  allArticlesData();
   articles = articles.filter(
     (article) =>
       article.year === year.toString() &&
@@ -192,8 +192,8 @@ export async function dayData(year, month, day) {
  * @param {string} [order="asc"] - The order in which the slugs should be sorted. Defaults to "asc".
  * @returns {Promise<string[]>} - An array of unique slugs for the articles.
  */
-export async function availableSlugs(year, month, day, order = "asc") {
-  let articles = await allArticlesData();
+export  function availableSlugs(year, month, day, order = "asc") {
+  let articles =  allArticlesData();
   articles = articles.filter(
     (article) =>
       article.year === year.toString() &&
@@ -215,8 +215,8 @@ export async function availableSlugs(year, month, day, order = "asc") {
  * @param {string} slug - The slug of the article.
  * @returns {Promise<Array>} - A promise that resolves to an array of articles matching the provided parameters.
  */
-export async function fullPathData(year, month, day, slug) {
-  let articles = await allArticlesData();
+export  function fullPathData(year, month, day, slug) {
+  let articles =  allArticlesData();
   articles = articles.filter(
     (article) =>
       article.year === year.toString() &&
@@ -233,9 +233,9 @@ export async function fullPathData(year, month, day, slug) {
  * @param {string} slug - The slug of the article.
  * @returns {Promise<Array>} - A promise that resolves to an array of articles matching the provided slug.
  */
-export async function articleData(slug) {
+export  function articleData(slug) {
   slug = slug.trim();
-  let articles = await allArticlesData();
+  let articles =  allArticlesData();
   articles = articles.filter((article) => article.slug === slug.toString());
   return articles;
 }
@@ -245,8 +245,8 @@ export async function articleData(slug) {
  * @param {string} order - The order in which the tags should be sorted. Defaults to "asc".
  * @returns {Promise<Array<string>>} - A promise that resolves to an array of unique tags.
  */
-export async function availableTags(order = "asc") {
-  let articles = await allArticlesData();
+export  function availableTags(order = "asc") {
+  let articles =  allArticlesData();
   let availableTags = articles.map((article) => article.tags);
   let tags = articles.map((article) => article.tags);
   availableTags = [...tags, ...availableTags];
@@ -260,9 +260,9 @@ export async function availableTags(order = "asc") {
  * Retrieves the available tags with their respective count of articles.
  * @returns {Promise<Array<{tag: string, count: number}>>} The array of tags with their respective count.
  */
-export async function availableTagsWithCount() {
-  let articles = await allArticlesData();
-  let allTags = await availableTags();
+export  function availableTagsWithCount() {
+  let articles =  allArticlesData();
+  let allTags =  availableTags();
   let tagsWithCount = allTags.map((tag) => {
     let count = articles.filter((article) => article.tags.includes(tag)).length;
     return { tag: tag, count: count };
@@ -276,9 +276,9 @@ export async function availableTagsWithCount() {
  * @param {string} tag - The tag to filter articles by.
  * @returns {Promise<Array>} - A promise that resolves to an array of articles.
  */
-export async function articlesByTag(tag) {
+export  function articlesByTag(tag) {
   tag = tag.trim();
-  let articles = await allArticlesData();
+  let articles =  allArticlesData();
   articles = articles.filter((article) => article.tags.includes(tag));
   return articles;
 }
@@ -288,8 +288,8 @@ export async function articlesByTag(tag) {
  * @param {string[]} tags - An array of tags to filter the articles by.
  * @returns {Promise<Object[]>} - A promise that resolves to an array of articles matching the provided tags.
  */
-export async function articlesByTags(tags) {
-  let articles = await allArticlesData();
+export  function articlesByTags(tags) {
+  let articles =  allArticlesData();
   articles = articles.filter((article) => {
     return tags.every((tag) => article.tags.includes(tag));
   });
@@ -300,8 +300,8 @@ export async function articlesByTags(tags) {
  * Retrieves the available categories from the articles data.
  * @returns {Promise<string[]>} An array of unique category names.
  */
-export async function availableCategories() {
-  let articles = await allArticlesData();
+export  function availableCategories() {
+  let articles =  allArticlesData();
   let categories = articles.map((article) => article.categories);
   categories = categories.flat();
   categories = [...new Set(categories)];
@@ -312,9 +312,9 @@ export async function availableCategories() {
  * Retrieves the available categories with their respective article counts.
  * @returns {Promise<Array<{category: string, count: number}>>} An array of objects containing the category name and the count of articles in that category.
  */
-export async function availableCategoriesWithCount() {
-  let articles = await allArticlesData();
-  let allCategories = await availableCategories();
+export  function availableCategoriesWithCount() {
+  let articles =  allArticlesData();
+  let allCategories =  availableCategories();
   let categoriesWithCount = allCategories.map((category) => {
     let count = articles.filter((article) =>
       article.categories.includes(category)
@@ -330,9 +330,9 @@ export async function availableCategoriesWithCount() {
  * @param {string} category - The category to filter articles by.
  * @returns {Promise<Array>} - A promise that resolves to an array of articles.
  */
-export async function articlesByCategory(category) {
+export  function articlesByCategory(category) {
   category = category.trim();
-  let articles = await allArticlesData();
+  let articles =  allArticlesData();
   articles = articles.filter((article) =>
     article.categories.includes(category)
   );
@@ -345,8 +345,8 @@ export async function articlesByCategory(category) {
  * @param {string[]} categories - An array of category names.
  * @returns {Promise<Object[]>} - A promise that resolves to an array of articles.
  */
-export async function articlesByCategories(categories) {
-  let articles = await allArticlesData();
+export  function articlesByCategories(categories) {
+  let articles =  allArticlesData();
   articles = articles.filter((article) => {
     return categories.every((category) =>
       article.categories.includes(category)
