@@ -1,6 +1,6 @@
 import ParapgraphMappingComponent from "@/components/blog-components/mdx/paragraph";
 import LinkMappingComponent from "@/components/blog-components/mdx/link-mapping-component";
-
+import ImageMappingComponent from "@/components/blog-components/mdx/image-component";
 
 
 import { allArticlesData } from "@/utils/blog/updated-functions";
@@ -19,6 +19,7 @@ export default function Page({ params }) {
     h6: ({ node, ...props }) => <h6 className="text-pink-500 text-4xl">{props.children}</h6>,
     p: (para = { node, ...props }) => <ParapgraphMappingComponent objectElement={para} />,
     a: (para = { node, ...props }) => <LinkMappingComponent objectElement={para} />,
+    img: (para = { node, ...props }) => <ImageMappingComponent objectElement={para} />,
   }
   return (
     <>
