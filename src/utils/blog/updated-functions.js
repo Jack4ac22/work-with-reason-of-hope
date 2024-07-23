@@ -63,16 +63,16 @@ export function getArticleData(articleIdentifier, articlesDirectoryPath) {
  * @returns {Promise<Array>} The array of articles data.
  */
 export function allArticlesData() {
-  const jsonFilePath = path.join(process.cwd(), "/src/assets/articles.json");
+  const jsonFilePath = path.join(process.cwd(), "/src/assets/blog/articles.json");
   if (
     !fs.existsSync(jsonFilePath) ||
     JSON.parse(fs.readFileSync(jsonFilePath)).length === 0
   ) {
     let articlesInJson = [];
     articlesDirectoryPath.map((directory) => {
-      const articleFiles = getArticleFiles(`/src/assets/content/${directory}`);
+      const articleFiles = getArticleFiles(`/src/assets/blog/blog-articles/${directory}`);
       const articles = articleFiles.map((articleFile) => {
-        return getArticleData(articleFile, `/src/assets/content/${directory}`);
+        return getArticleData(articleFile, `/src/assets/blog/blog-articles/${directory}`);
       });
       const publishedArticles = articles.filter(
         (article) => article.status === "published"
