@@ -3,6 +3,7 @@ import fs from "fs";
 import matter from "gray-matter";
 
 const articlesFolder = "/src/assets/blog/blog-articles";
+const pagesFolder = "/src/assets/blog/blog-pages";
 
 /**
  * Retrieves the directories of articles from the specified content folder.
@@ -42,6 +43,11 @@ export const getArticlesList = () => {
     });
     articles = [...articles];
   });
+  articles = articles.map((article) => {
+    const { directory, fileName } = article;
+    const newFileName = fileName.replace(/\.(md|mdx)$/, "");
+    return { directory, fileName: newFileName };
+  });
   return articles;
 };
 
@@ -50,12 +56,24 @@ export const getArticlesList = () => {
  *
  * @param {string} articleDirectory - The directory where the article is located.
  * @param {string} articleFileName - The filename of the article.
+ * @param {string} [assetsFolder=articlesFolder] - The folder where the assets are located.
  * @returns {Object} - The data for the article.
  */
-export function getSingleArticleData(articleDirectory, articleFileName) {
+export function getSingleArticleData(
+  articleDirectory,
+  articleFileName,
+  assetsFolder = articlesFolder
+) {
+  if (!articleFileName.endsWith(".md")) {
+    articleFileName += ".md";
+  }
+  let folder = "";
+  assetsFolder === "pagesFolder"
+    ? (folder = pagesFolder)
+    : (folder = articlesFolder);
   const articlePath = path.join(
     process.cwd(),
-    articlesFolder,
+    folder,
     articleDirectory,
     articleFileName
   );
@@ -88,7 +106,7 @@ export function getSingleArticleData(articleDirectory, articleFileName) {
  * Retrieves data for all articles.
  * @returns {Array} An array containing data for all articles.
  */
-export function getAillArticlesData() {
+export function getAllArticlesData() {
   let allArticles = [];
   const articles = getArticlesList();
   articles.map((article) => {
@@ -100,5 +118,3 @@ export function getAillArticlesData() {
   });
   return allArticles;
 }
-
-

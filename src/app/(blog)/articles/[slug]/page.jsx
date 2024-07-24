@@ -2,14 +2,14 @@ import ParapgraphMappingComponent from "@/components/blog-components/mdx/paragra
 import LinkMappingComponent from "@/components/blog-components/mdx/link-mapping-component";
 import ImageMappingComponent from "@/components/blog-components/mdx/image-component";
 
-
-import { allArticlesData } from "@/utils/blog/updated-functions";
+import { getAllArticlesData } from "@/utils/blog/articles-functions";
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
+
 export default function Page({ params }) {
-  const article = allArticlesData()[params.index]
+  const article = getAllArticlesData().filter(article => article.slug === params.slug)[0];
   const customRenderers = {
     h1: ({ node, ...props }) => <h1 className="text-green-500 text-4xl">{props.children}</h1>,
     h2: ({ node, ...props }) => <h2 className="text-red-500 text-4xl">{props.children}</h2>,

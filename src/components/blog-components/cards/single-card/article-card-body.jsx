@@ -22,7 +22,7 @@ export default function ArticleCardBody({ article }) {
             <p className="text-sm text-center">{article.description}</p>
             {/* seperator */}
             <span className="inline-block h-1 w-10 rounded bg-indigo-500 mt-4 mb-2"></span>
-            <Link href={`/blog/${article.slug}`} className="inline-flex my-1 text-white bg-mainBrand border-0 py-1 px-6 focus:outline-none hover:brightness-90 rounded">اقرأ المزيد</Link>
+            <Link href={`/articles/${article.slug}`} className="inline-flex my-1 text-white bg-mainBrand border-0 py-1 px-6 focus:outline-none hover:brightness-90 rounded">اقرأ المزيد</Link>
           </div>
           {/* show/hide description button */}
           <div className={`cursor-pointer flex flex-col justify-center ${!showDescription ? 'hidden' : ''}`} >
@@ -46,7 +46,7 @@ export default function ArticleCardBody({ article }) {
         <p className="p-2 text-sm text-justify">
           {article.description}
         </p>
-        <Link href={`/blog/${article.slug}`} className="inline-flex my-1 text-white bg-mainBrand border-0 py-1 px-6 focus:outline-none hover:brightness-90 rounded text-center mx-auto">اقرأ المزيد</Link>
+        <Link href={`/articles/${article.slug}`} className="inline-flex my-1 text-white bg-mainBrand border-0 py-1 px-6 focus:outline-none hover:brightness-90 rounded text-center mx-auto">اقرأ المزيد</Link>
       </>
     )
   }

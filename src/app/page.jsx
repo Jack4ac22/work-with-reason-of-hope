@@ -1,18 +1,8 @@
-import { allArticlesData } from "@/utils/blog/updated-functions";
-import Image from 'next/image';
+import { getAllArticlesData } from "@/utils/blog/articles-functions";
 import Link from "next/link";
 import ArticleCard from "@/components/blog-components/cards/single-card/article-card";
-function PillBadge(props) {
-  return (
-    <Link href={`${props.link}`} key={props.key}>
-      <span className={`tracking-wider px-4 py-1 text-sm rounded leading-loose mx-2 font-semibold bg-${props.bg} dark:bg-${props.dark_pd}`} title="">
-        {props.title}
-      </span>
-    </Link>
-  )
-};
 export default function Home() {
-  const articles = allArticlesData().slice(15, 45);
+  const articles = getAllArticlesData().slice(1, 45);
   return (
     <>
       <h1>Home Page</h1>

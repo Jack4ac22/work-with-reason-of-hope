@@ -1,7 +1,7 @@
-import { allArticlesData } from "@/utils/blog/updated-functions";
+import { getAllArticlesData } from "@/utils/blog/articles-functions";
 import ArticleCard from "@/components/blog-components/cards/single-card/article-card";
 export default function Page() {
-  const articles = allArticlesData();
+  const articles = getAllArticlesData();
   const article = articles[15];
   const article2 = articles[45];
   const book = articles[360];
