@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -12,8 +12,6 @@ export default {
         serif: ["Merriweather", "serif"],
       },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
         lightShade: {
           100: "#fefefe",
           200: "#fdfcfc",
@@ -185,4 +183,5 @@ export default {
     },
   },
   plugins: [],
+  darkMode: "class",
 };

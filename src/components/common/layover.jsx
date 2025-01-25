@@ -37,10 +37,10 @@ export default function LayOverSection() {
           </header>
           <div className="h-[70vh] bg-lightShade-500 dark:bg-lightShade-800">
             {/* {layoverObject.link} */}
-            {layoverObject.type === "link" && <LinkLayover layoverObject={layoverObject} />}
+            {/* {layoverObject.type === "link" && <LinkLayover layoverObject={layoverObject} />} */}
             {/* layover image */}
             {layoverObject.type === "image" && <>
-              <ImageLayover layoverObject={layoverObject} />
+              {/* <ImageLayover layoverObject={layoverObject} /> */}
             </>
             }
           </div>
