@@ -1,7 +1,6 @@
 "use server";
-
 import { sendContactMail } from "@/util/lib/mailing/nodemailer";
-import mainDB from "@/util/db-libraries/users-library/usersDB";
+import registerNewUser from "@/util/db-libraries/users-library/registerNewUser"
 
 const blockedDomains = (process.env.BLOCKED_DOMAINS || "getmoreopportunities.info,growthmarketingnow.info,increasetraffic.shop").split(",");
 const blockedWords = (process.env.BLOCKED_WORDS || "growth,marketing,formula,opportunity,profit,eco,crowdfunding").split(",");
@@ -76,15 +75,24 @@ export async function registerUser(prevState, formData) {
   }
 
   if (errors.length > 0) {
-    return { prevState, errors };
+    return {
+      prevState: {
+        fullName,
+        email,
+        resume,
+        roles,
+        agreement,
+      }, errors
+    };
   }
 
   // Send email or save to the database
 
 
   // const response = await sendContactMail({ fullName, email, resume, roles });
-
-  const response = { success: true }; // Simulated response
+  const data = { fullName, email, resume, roles, agreement };
+  const newUser = await registerNewUser(data);
+  const response = {newUser, message: "User has been registered successfully!"};
 
   return { prevState, response };
 }
