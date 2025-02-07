@@ -1,6 +1,8 @@
 "use server";
 import { sendContactMail } from "@/util/lib/mailing/nodemailer";
 import registerNewUser from "@/util/db-libraries/users-library/registerNewUser"
+import findUserByfield from "@/util/db-libraries/users-library/findUser"
+import { decodeJWT } from "@/util/lib/jwt/jwt";
 
 const blockedDomains = (process.env.BLOCKED_DOMAINS || "getmoreopportunities.info,growthmarketingnow.info,increasetraffic.shop").split(",");
 const blockedWords = (process.env.BLOCKED_WORDS || "growth,marketing,formula,opportunity,profit,eco,crowdfunding").split(",");
@@ -92,7 +94,102 @@ export async function registerUser(prevState, formData) {
   // const response = await sendContactMail({ fullName, email, resume, roles });
   const data = { fullName, email, resume, roles, agreement };
   const newUser = await registerNewUser(data);
-  const response = {newUser, message: "User has been registered successfully!"};
+  const response = { newUser, message: "User has been registered successfully!" };
 
+  return { prevState, response };
+}
+
+export async function activateUser(prevState, formData) {
+  const password = formData.get("password");
+  const verifyPassword = formData.get("verifyPassword");
+  const userName = formData.get("userName");
+  const token = formData.get("token");
+  const errors = [];
+  let user = null;
+
+  const tokenContent = decodeJWT(token);
+  if (!tokenContent) {
+    errors.push({
+      name: "token",
+      message: "Invalid token - توكن غير صالح.",
+    });
+  }
+
+  if (tokenContent.email) {
+    user = await findUserByfield("email", tokenContent.email);
+    if (!user) {
+      errors.push({
+        name: "token",
+        message: "Invalid token - توكن غير صالح.",
+      });
+    }
+  }
+
+
+
+  if (!password || password.trim() === "") {
+    errors.push({
+      name: "password",
+      message: "Password is required - كلمة السر مطلوبة.",
+    });
+  }
+
+  if (password !== verifyPassword) {
+    errors.push({
+      name: "password",
+      message: "Password must match - كلمة السر يجب ان تتطابق.",
+    }, {
+      name: "verifyPassword",
+      message: "Password must match - كلمة السر يجب ان تتطابق.",
+    });
+  }
+
+  // passwprd minimum 8 chars 
+  if(password.trim().length < 8){
+    errors.push({
+      name: "password",
+      message: "Password must be at least 8 characters - كلمة السر يجب ان تكون على الاقل 8 حروف.",
+    });
+  }
+
+
+
+  // username is optional but it should be unique
+
+  if (userName) {
+    const existingUser = await findUserByfield("username", userName);
+    if (existingUser) {
+      errors.push({
+        name: "username",
+        message: "Username already exists - الاسم المستخدم موجود بالفعل.",
+      });
+    }
+  }
+  
+
+  // check the validity of the token
+
+  // check if the user exists
+
+  // check the user is not already activated
+
+
+
+  if (errors.length > 0) {
+    return {
+      prevState: {
+        password,
+        verifyPassword,
+        userName,
+        token,
+      }, errors
+    };
+  }
+  const data = { password, token, user };
+
+  console.log(data);
+
+
+  const response = { message: "User has been activated successfully!" };
   return { prevState, response };
 }
