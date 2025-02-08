@@ -145,7 +145,7 @@ export async function activateUser(prevState, formData) {
   }
 
   // passwprd minimum 8 chars 
-  if(password.trim().length < 8){
+  if (password.trim().length < 8) {
     errors.push({
       name: "password",
       message: "Password must be at least 8 characters - كلمة السر يجب ان تكون على الاقل 8 حروف.",
@@ -165,11 +165,7 @@ export async function activateUser(prevState, formData) {
       });
     }
   }
-  
 
-  // check the validity of the token
-
-  // check if the user exists
 
   // check the user is not already activated
 
