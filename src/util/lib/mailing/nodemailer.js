@@ -33,6 +33,19 @@ export const getMailOptions = (to) => {
   };
 };
 
+// Function to get mail options without CC
+/**
+ * 
+ * @param {string} to - The recipient's email address.
+ * @returns {Object} The mail options object.
+ */
+export const getMailOptionsNoCC = (to) => {
+  return {
+    from: email,
+    to: to,
+  };
+};
+
 /**
  * Retrieves the HTML template for a given mail template.
  *

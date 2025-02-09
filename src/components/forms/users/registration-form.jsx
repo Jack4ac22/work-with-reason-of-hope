@@ -1,15 +1,17 @@
 "use client";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 import { useState } from "react";
 import Link from "next/link";
 
 export default function RegistrationForm({ action }) {
-  const [state, formAction] = useFormState(action, {});
+  const [state, formAction] = useActionState(action, {});
   const [language, setLanguage] = useState("en");
   const labels = {
     en: {
       fullName: "Full Name",
+      fullNamePlaceholder: "Enter your full name",
       email: "Email Address",
+      emailPlaceholder: "Enter your email address",
       role: "Desired Role",
       proofreader: "Proofreader",
       translator: "Translator",
@@ -17,6 +19,7 @@ export default function RegistrationForm({ action }) {
       admin: "Admin",
       submit: "Submit",
       resume: "Resume",
+      resumePlaceholder: "Please provide a brief resume of your Journey of faith and experiences in the field of translation and proofreading.",
       agreement: "I agree to the terms and conditions",
       agreementLinkLabel: "Read terms and conditions",
       agreementLink: "/terms",
@@ -25,7 +28,9 @@ export default function RegistrationForm({ action }) {
     },
     ar: {
       fullName: "الإسم الكامل",
+      fullNamePlaceholder: "ادخل اسمك الكامل",
       email: "البريد الإلكتروني",
+      emailPlaceholder: "ادخل بريدك الإلكتروني",
       role: "الدور المطلوب",
       proofreader: "مصحح لغوي",
       translator: "مترجم",
@@ -33,6 +38,7 @@ export default function RegistrationForm({ action }) {
       admin: "مشرف",
       submit: "إرسال",
       resume: "السيرة الذاتية",
+      resumePlaceholder: "يرجى تقديم سيرة ذاتية موجزة لرحلتك في الإيمان وتجاربك في مجال الترجمة والمراجعة.",
       agreement: "أوافق على الشروط والأحكام",
       agreementLinkLabel: "قراءة الشروط والأحكام",
       agreementLink: "/terms",
@@ -51,20 +57,20 @@ export default function RegistrationForm({ action }) {
   return (
     <>
       {state?.response ? (
-        <div className="min-h-screen p-6 bg-lightShade-100 dark:bg-darkShade-900 flex items-center justify-center" dir={language === "ar" ? "rtl" : "ltr"}>
-          <div className="container max-w-screen-lg mx-auto">
+        <div className="form-container" dir={language === "ar" ? "rtl" : "ltr"}>
+          <div className="form-wrapper">
             <div>
               <p>{state?.response?.message}</p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="min-h-screen p-6 bg-lightShade-100 dark:bg-darkShade-900 flex items-center justify-center" dir={language === "ar" ? "rtl" : "ltr"}>
-          <div className="container max-w-screen-lg mx-auto">
+        <div className="form-container" dir={language === "ar" ? "rtl" : "ltr"}>
+          <div className="form-wrapper">
             <div>
               {/* Language Selector */}
               <div className="mb-4">
-                <label className="block text-lightShade-800 dark:text-lightShade-100 font-bold mb-2" htmlFor="language">
+                <label className="form-label" htmlFor="language">
                   Language / اللغة
                 </label>
                 <select
@@ -72,7 +78,7 @@ export default function RegistrationForm({ action }) {
                   name="language"
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="h-10 border rounded px-4 w-full bg-lightShade-200 dark:bg-darkShade-800 text-lightShade-800 dark:text-lightShade-100"
+                  className="h-10 form-input"
                 >
                   <option value="en">English</option>
                   <option value="ar">العربية</option>
@@ -81,8 +87,8 @@ export default function RegistrationForm({ action }) {
 
               {/* Form */}
               <form action={formAction}>
-                <div className="bg-lightShade-100 dark:bg-darkShade-800 rounded shadow-lg p-4 px-4 md:p-8 mb-6 text-lightShade-800 dark:text-lightShade-100">
-                  <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+                <div className="form-card text-lightShade-800 dark:text-lightShade-100">
+                  <div className="form-grid">
 
                     {/* Form Title and Description */}
                     <div className="">
@@ -93,7 +99,7 @@ export default function RegistrationForm({ action }) {
                     {/* Form Fields */}
 
                     <div className="lg:col-span-2">
-                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
+                      <div className="form-fields-grid">
 
 
                         {/* Full Name */}
@@ -105,18 +111,18 @@ export default function RegistrationForm({ action }) {
                             type="text"
                             name="fullName"
                             id="fullName"
-                            className={`h-10 border mt-1 rounded px-4 w-full bg-lightShade-200 dark:bg-darkShade-800 text-lightShade-800 dark:text-lightShade-100 ${getError("fullName") ? "border-error-500" : "border-gray-300 dark:border-gray-700"}`}
+                            className={`h-10 form-input ${getError("fullName") ? "form-input-error" : "form-input-border"}`}
                             placeholder={
                               language === "en"
-                                ? "Please enter your full name"
-                                : "الرجاء إدخال الإسم الكامل"
+                                ? currentLabels.fullNamePlaceholder
+                                : currentLabels.fullNamePlaceholder
                             }
                             aria-invalid={!!getError("fullName")}
                             defaultValue={prevState.fullName || ""}
                             lang={language}
                           />
                           {getError("fullName") && (
-                            <p className="text-error-500 text-xs mt-1">
+                            <p className="form-error-message">
                               {getError("fullName").message}
                             </p>
                           )}
@@ -131,18 +137,18 @@ export default function RegistrationForm({ action }) {
                             type="email"
                             name="email"
                             id="email"
-                            className={`h-10 border mt-1 rounded px-4 w-full bg-lightShade-200 dark:bg-darkShade-800 text-lightShade-800 dark:text-lightShade-100 ${getError("email") ? "border-error-500" : "border-gray-300 dark:border-gray-700"}`}
+                            className={`h-10 form-input ${getError("email") ? "form-input-error" : "form-input-border"}`}
                             placeholder={
                               language === "en"
-                                ? "Please enter your email address"
-                                : "الرجاء إدخال البريد الإلكتروني"
+                                ? currentLabels.emailPlaceholder
+                                : currentLabels.emailPlaceholder
                             }
                             aria-invalid={!!getError("email")}
                             defaultValue={prevState.email || ""}
                             lang={language}
                           />
                           {getError("email") && (
-                            <p className="text-error-500 text-xs mt-1">
+                            <p className="form-error-message">
                               {getError("email").message}
                             </p>
                           )}
@@ -156,18 +162,18 @@ export default function RegistrationForm({ action }) {
                           <textarea
                             name="resume"
                             id="resume"
-                            className={`h-20 border mt-1 rounded px-4 w-full bg-lightShade-200 dark:bg-darkShade-800 text-lightShade-800 dark:text-lightShade-100 ${getError("fullName") ? "border-error-500" : "border-gray-300 dark:border-gray-700"}`}
+                            className={`h-20 form-input  ${getError("fullName") ? "form-input-error" : "form-input-border"}`}
                             placeholder={
                               language === "en"
-                                ? "Please provide a brief resume of your Journey of faith and experiences in the field of translation and proofreading."
-                                : "يرجى تقديم سيرة ذاتية موجزة لرحلتك في الإيمان وتجاربك في مجال الترجمة والمراجعة."
+                                ? currentLabels.resumePlaceholder
+                                : currentLabels.resumePlaceholder
                             }
                             aria-invalid={!!getError("resume")}
                             defaultValue={prevState.resume || ""}
                             lang={language}
                           ></textarea>
                           {getError("resume") && (
-                            <p className="text-error-500 text-xs mt-1">
+                            <p className="form-error-message">
                               {getError("resume").message}
                             </p>
                           )}
@@ -178,8 +184,8 @@ export default function RegistrationForm({ action }) {
                           <label htmlFor="role" className="block my-2">
                             {currentLabels.role}
                           </label>
-                          <div className={`grid grid-cols-2 gap-2 border mt-1 rounded px-4 w-full bg-lightShade-200 dark:bg-darkShade-800 text-lightShade-800 dark:text-lightShade-100 ${getError("role") ? "border-error-500" : "border-gray-300 dark:border-gray-700"}`}>
-                            <label className="flex items-center">
+                          <div className={`form-checkboxes-container ${getError("role") ? "form-input-error" : "form-input-border"}`}>
+                            <label className="form-checkbox-container">
                               <input
                                 type="checkbox"
                                 name="role"
@@ -189,7 +195,7 @@ export default function RegistrationForm({ action }) {
                               />
                               <span className="ml-2">{currentLabels.proofreader}</span>
                             </label>
-                            <label className="flex items-center">
+                            <label className="form-checkbox-container">
                               <input
                                 type="checkbox"
                                 name="role"
@@ -199,7 +205,7 @@ export default function RegistrationForm({ action }) {
                               />
                               <span className="ml-2">{currentLabels.translator}</span>
                             </label>
-                            <label className="flex items-center">
+                            <label className="form-checkbox-container">
                               <input
                                 type="checkbox"
                                 name="role"
@@ -209,7 +215,7 @@ export default function RegistrationForm({ action }) {
                               />
                               <span className="ml-2">{currentLabels.editor}</span>
                             </label>
-                            <label className="flex items-center">
+                            <label className="form-checkbox-container">
                               <input
                                 type="checkbox"
                                 name="role"
@@ -221,15 +227,15 @@ export default function RegistrationForm({ action }) {
                             </label>
                           </div>
                           {getError("role") && (
-                            <p className="text-error-500 text-xs mt-1">
+                            <p className="form-error-message">
                               {getError("role").message}
                             </p>
                           )}
                         </div>
 
                         {/* Agreement */}
-                        <div className={`md:col-span-5 ${getError("agreement") ? "border rounded border-error-500" : ""}`}>
-                          <div className={`flex items-center `}>
+                        <div className={`md:col-span-5 ${getError("agreement") ? "border rounded form-input-error" : ""}`}>
+                          <div className={`form-checkbox-container `}>
                             <input
                               type="checkbox"
                               id="agreement"
@@ -246,7 +252,7 @@ export default function RegistrationForm({ action }) {
                             </Link>
                           </p>
                           {getError("agreement") && (
-                            <p className="text-error-500 text-xs mt-1">
+                            <p className="form-error-message">
                               {getError("agreement").message}
                             </p>
                           )}
@@ -255,7 +261,7 @@ export default function RegistrationForm({ action }) {
                         {/* Submit Button */}
                         <div className="md:col-span-5 text-right">
                           <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            className="form-button"
                             type="submit"
                           >
                             {currentLabels.submit}

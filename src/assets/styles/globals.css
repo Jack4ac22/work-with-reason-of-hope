@@ -5,7 +5,70 @@
 .uni-background {
   @apply bg-lightShade-200 dark:bg-darkAccent-800;
 }
+/* Global Form Styles */
+.form-container {
+  @apply min-h-screen p-6 bg-lightShade-100 dark:bg-darkShade-900 flex items-center justify-center;
+}
 
+.form-wrapper {
+  @apply container max-w-screen-lg mx-auto;
+}
+
+.form-card {
+  @apply bg-lightShade-100 dark:bg-darkShade-800 rounded shadow-lg p-4 px-4 md:p-8 mb-6;
+}
+
+.form-grid {
+  @apply grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3;
+}
+
+.form-fields-grid{
+  @apply grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5;
+}
+
+.form-label {
+  @apply block text-lightShade-800 dark:text-lightShade-100 font-bold mb-2;
+}
+
+.form-input {
+  @apply border mt-1 rounded px-4 w-full bg-lightShade-200 dark:bg-darkShade-800 text-lightShade-800 dark:text-lightShade-100
+}
+
+.form-input-error {
+  @apply border-error-500;
+}
+
+.form-input-border {
+  @apply border-gray-300 dark:border-gray-700;
+}
+
+.form-error-message {
+  @apply text-error-500 text-xs mt-1;
+}
+
+.form-button {
+  @apply bg-mainBrand-500 hover:bg-mainBrand-600 dark:bg-mainBrand-300 dark:hover:bg-mainBrand-200 text-lightShade-100 dark:text-darkShade-900 font-bold py-2 px-4 rounded;
+}
+
+.form-checkboxes-container{
+  @apply grid grid-cols-2 gap-2 border mt-1 rounded px-4 w-full bg-lightShade-200 dark:bg-darkShade-800 text-lightShade-800 dark:text-lightShade-100;
+}
+.form-checkbox-container {
+  @apply flex items-center;
+}
+
+.form-checkbox {
+  @apply text-mainBrand-500;
+}
+
+
+.form-section-title {
+  @apply font-medium text-lg text-lightShade-800 dark:text-lightShade-100;
+}
+
+.form-section-description {
+  @apply text-lightShade-800 dark:text-lightShade-100;
+}
 
 ,
 @layer base {

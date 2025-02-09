@@ -5,6 +5,7 @@ import { Markazi_Text, Roboto, Geist, Geist_Mono } from "next/font/google";
 import "@/assets/styles/globals.css";
 import { ThemeProvider } from 'next-themes'
 import { LayoverGlobalProvider } from "@/context/layover/LayoverGlobalContext";
+import { PreferencesGlobalProvider } from '@/context/preferences/PreferencesGlobalContext';
 import MainFooter from "@/components/common/ui/main-footer";
 
 
@@ -46,14 +47,16 @@ export default function RootLayout({ children }) {
       <body className="uni-background transition-all duration-200">
         <GoogleAnalytics />
         <ThemeProvider attribute="class" defaultTheme='system' enableSystem>
-          <LayoverGlobalProvider>
-            {/* <div className="flex flex-col items-center justify-center min-h-[90vh]"> */}
+          <PreferencesGlobalProvider>
+            <LayoverGlobalProvider>
+              {/* <div className="flex flex-col items-center justify-center min-h-[90vh]"> */}
               {/* <div className="flex flex-col gap-8 row-start-2 items-center sm:items-start"> */}
-                {/* <LayOverSection /> */}
-                {children}
+              {/* <LayOverSection /> */}
+              {children}
               {/* </div> */}
-            {/* </div> */}
-          </LayoverGlobalProvider>
+              {/* </div> */}
+            </LayoverGlobalProvider>
+          </PreferencesGlobalProvider>
         </ThemeProvider>
         {/* <Analytics /> */}
         {/* <SpeedInsights /> */}

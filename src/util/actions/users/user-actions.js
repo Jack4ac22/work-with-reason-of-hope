@@ -1,12 +1,18 @@
 "use server";
 import { sendRegisterationMail } from "@/util/lib/mailing/templates/registeration/registeration-email.js";
-import registerNewUser from "@/util/db-libraries/users-library/registerNewUser"
-import findUserByfield from "@/util/db-libraries/users-library/findUser"
+import registerNewUser from "@/util/db-libraries/users-library/db-register-new-user"
+import findUserByfield from "@/util/db-libraries/users-library/db-find-user"
 import { decodeJWT } from "@/util/lib/jwt/jwt";
 
 const blockedDomains = (process.env.BLOCKED_DOMAINS || "getmoreopportunities.info,growthmarketingnow.info,increasetraffic.shop").split(",");
 const blockedWords = (process.env.BLOCKED_WORDS || "growth,marketing,formula,opportunity,profit,eco,crowdfunding").split(",");
 
+/**
+ * Checks for spam links in a given message.
+ * @param {string} message - The message content to scan for spam links.
+ * @param {string[]} blockedWords - List of words considered as spam.
+ * @returns {boolean} True if spam is found, otherwise false.
+ */
 function checkLinksForSpam(message, blockedWords) {
   const urlRegex = /https?:\/\/[^\s]+/gi;
   const links = message.match(urlRegex) || [];
@@ -21,6 +27,12 @@ function checkLinksForSpam(message, blockedWords) {
   return false;
 }
 
+/**
+ * Registers a new user with validation and generates verification tokens.
+ * @param {Object} prevState - Previous state of the form.
+ * @param {FormData} formData - Submitted form data.
+ * @returns {Object} Updated state with success message or errors.
+ */
 export async function registerUser(prevState, formData) {
   const fullName = formData.get("fullName");
   const email = formData.get("email");
@@ -113,6 +125,13 @@ export async function registerUser(prevState, formData) {
   return { prevState, response };
 }
 
+/**
+ * Activates a user account by validating the token and setting a new password.
+ * 
+ * @param {Object} prevState - The previous state of the form.
+ * @param {FormData} formData - The form data submitted by the user.
+ * @returns {Object} The updated state with success message or errors.
+ */
 export async function activateUser(prevState, formData) {
   const password = formData.get("password");
   const verifyPassword = formData.get("verifyPassword");

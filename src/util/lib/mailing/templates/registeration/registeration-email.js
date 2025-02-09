@@ -1,7 +1,7 @@
 "use server";
 import {
   transporter,
-  getMailOptions,
+  getMailOptionsNoCC,
   getMailHtmlTemplate,
   getMailTextTemplate,
 } from "@/util/lib/mailing/nodemailer";
@@ -10,7 +10,6 @@ const templates_folder_path = "/src/util/lib/mailing/templates";
 
 /**
  * Sends a registration confirmation email to a new user.
- *
  * @param {Object} data - The registration data for the email.
  * @param {string} data.email_verification_token - The unique token for verifying the user's email.
  * @param {string} data.jwt_token - The JWT token for authentication purposes.
@@ -28,7 +27,7 @@ export const sendRegisterationMail = async (data) => {
     templates_folder_path
   );
   const { email_verification_token, jwt_token, email, title } = data;
-  const mailOptions = getMailOptions(email);
+  const mailOptions = getMailOptionsNoCC(email);
   const html = template_html_string
     .replaceAll("${email_verification_token}", email_verification_token)
     .replaceAll("${jwt_token}", jwt_token)
