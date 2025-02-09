@@ -1,5 +1,5 @@
 "use server";
-import { sendContactMail } from "@/util/lib/mailing/nodemailer";
+import { sendRegisterationMail } from "@/util/lib/mailing/templates/registeration/registeration-email.js";
 import registerNewUser from "@/util/db-libraries/users-library/registerNewUser"
 import findUserByfield from "@/util/db-libraries/users-library/findUser"
 import { decodeJWT } from "@/util/lib/jwt/jwt";
@@ -36,6 +36,14 @@ export async function registerUser(prevState, formData) {
   }
 
   // Validate Email
+  const user = await findUserByfield("email", email);
+  if (user) {
+    errors.push({
+      name: "email",
+      message: "This email is already registered - هذا البريد الالكتروني مسجل بالفعل",
+      action: "login",
+    });
+  }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const emailDomain = email?.split("@")[1]?.toLowerCase();
   const emailUsername = email?.split("@")[0]?.toLowerCase();
@@ -88,13 +96,19 @@ export async function registerUser(prevState, formData) {
     };
   }
 
-  // Send email or save to the database
-
 
   // const response = await sendContactMail({ fullName, email, resume, roles });
   const data = { fullName, email, resume, roles, agreement };
   const newUser = await registerNewUser(data);
   const response = { newUser, message: "User has been registered successfully!" };
+
+  try {
+    sendRegisterationMail({ email, email_verification_token: newUser.email_verification_token, jwt_token: newUser.jwt_token });
+  } catch (error) {
+    console.log(error);
+    // log errors to logs table
+
+  }
 
   return { prevState, response };
 }
@@ -169,6 +183,16 @@ export async function activateUser(prevState, formData) {
 
   // check the user is not already activated
 
+  if (user) {
+    if (user.is_active) {
+      errors.push({
+        name: "user",
+        message: "User is already activated - المستخدم مفعل بالفعل.",
+        action: "login",
+      });
+    }
+  }
+
 
 
   if (errors.length > 0) {
@@ -182,8 +206,6 @@ export async function activateUser(prevState, formData) {
     };
   }
   const data = { password, token, user };
-
-  console.log(data);
 
 
   const response = { message: "User has been activated successfully!" };

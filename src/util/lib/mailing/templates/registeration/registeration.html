@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="bg-gray-100 p-4">
+      <!-- Arabic Version section -->
+      <section dir="rtl" class="bg-white p-4 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold text-gray-800">تأكيد تسجيل الحساب</h1>
+        <p class="text-gray-600 my-2">
+          شكرًا لتسجيلك في موقع
+          <a
+            href="http://www.reasonofhope.com"
+            class="underline underline-offset-4 text-blue-500 font-semibold"
+            >سبب الرجاء</a
+          >.
+        </p>
+        <p class="text-gray-600 my-2">
+          الرجاء استخدام الرمز التالي لتفعيل حسابك. هذا الرمز صالح لمدة ٧ أيام من وقت التسجيل:
+        </p>
+        <p class="text-3xl font-bold text-red-500">${email_verification_token}</p>
+        <p class="text-gray-600 my-2">أو يمكنك تفعيل حسابك مباشرة من خلال الرابط التالي:</p>
+        <a
+          href="http://www.reasonofhope.com/user/activate?token=${jwt_token}"
+          class="underline underline-offset-4 text-blue-500 font-semibold"
+          >تفعيل الحساب</a
+        >
+        <hr class="my-4" />
+        <p class="text-gray-600 my-2">
+          إذا لم تقم بالتسجيل، الرجاء تجاهل هذا البريد الإلكتروني، أو التواصل معنا عبر
+          <a
+            href="http://www.reasonofhope.com/contact"
+            class="underline underline-offset-4 text-blue-500 font-semibold"
+            >نموذج الاتصال</a
+          >
+          لمنع استخدام بريدك الإلكتروني في أي عملية مستقبلية. هذه عملية يدوية وقد تستغرق وقتًا، نعتذر عن أي إزعاج.
+        </p>
+      </section>
+      <hr class="my-4" />
+      <!-- English Version section -->
+      <section class="bg-white p-4 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold text-gray-800">Account Registration Confirmation</h1>
+        <p class="text-gray-600 my-2">
+          Thank you for registering at
+          <a
+            href="http://www.reasonofhope.com"
+            class="underline underline-offset-4 text-blue-500 font-semibold"
+            >Reason of Hope</a
+          >.
+        </p>
+        <p class="text-gray-600 my-2">
+          Please use the following code to verify your account. This code is valid for 7 days from the time of registration:
+        </p>
+        <p class="text-3xl font-bold text-red-500">${email_verification_token}</p>
+        <p class="text-gray-600 my-2">Or activate your account directly using the following link:</p>
+        <a
+          href="http://www.reasonofhope.com/user/activate?token=${jwt_token}"
+          class="underline underline-offset-4 text-blue-500 font-semibold"
+          >Activate Account</a
+        >
+        <hr class="my-4" />
+        <p class="text-gray-600 my-2">
+          If you did not register, please ignore this email or contact us using our
+          <a
+            href="http://www.reasonofhope.com/contact"
+            class="underline underline-offset-4 text-blue-500 font-semibold"
+            >contact form</a
+          >
+          to forbid the usage of your email address from being used in any further process. This is a manual process that might take time, apologies for such inconvenience.
+        </p>
+      </section>
+    </div>
+  </body>
+</html>

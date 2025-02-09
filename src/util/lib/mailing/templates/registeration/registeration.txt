@@ -1,0 +1,38 @@
+**Account Registration Confirmation**
+
+Thank you for registering at Reason of Hope.
+
+Please use the following code to verify your account. This code is valid for 7 days from the time of registration:
+
+Verification Code: ${email_verification_token}
+
+Or activate your account directly using the following link:
+
+[Activate Account](http://www.reasonofhope.com/user/activate?token=${jwt_token})
+
+If you did not register, please ignore this email or contact us using our contact form:
+
+[Contact Us](http://www.reasonofhope.com/contact)
+
+to forbid the usage of your email address from being used in any further process. This is a manual process that might take time, apologies for such inconvenience.
+
+---
+
+**تأكيد تسجيل الحساب**
+
+شكرًا لتسجيلك في موقع سبب الرجاء.
+
+الرجاء استخدام الرمز التالي لتفعيل حسابك. هذا الرمز صالح لمدة 7 أيام من وقت التسجيل:
+
+رمز التفعيل: ${email_verification_token}
+
+أو يمكنك تفعيل حسابك مباشرة من خلال الرابط التالي:
+
+[تفعيل الحساب](http://www.reasonofhope.com/user/activate?token=${jwt_token})
+
+إذا لم تقم بالتسجيل، الرجاء تجاهل هذا البريد الإلكتروني أو التواصل معنا عبر نموذج الاتصال:
+
+[تواصل معنا](http://www.reasonofhope.com/contact)
+
+لمنع استخدام بريدك الإلكتروني في أي عملية مستقبلية. هذه عملية يدوية قد تستغرق وقتًا، نعتذر عن أي إزعاج.
+

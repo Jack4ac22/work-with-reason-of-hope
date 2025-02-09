@@ -38,5 +38,20 @@ export default async function registerNewUser(data) {
     email_verification_expiry
   );
 
-  return result;
+  const newUser = {
+    id: result.lastInsertRowid,
+    external_id: newUUID,
+    full_name: fullName,
+    email,
+    bio: resume,
+    isAdmin,
+    isEditor,
+    isTranslator,
+    isProofreader: isReviewer,
+    email_verification_token,
+    email_verification_expiry,
+  };
+
+
+  return newUser;
 }

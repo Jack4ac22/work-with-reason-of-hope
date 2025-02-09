@@ -37,16 +37,17 @@ export const getMailOptions = (to) => {
  * Retrieves the HTML template for a given mail template.
  *
  * @param {string} template_name - The name of the template.
- * @param {string} [template_folder_path="/src/assets/email-templates"] - The folder path where the templates are located.
+ * @param {string} [template_folder_path="src/util/lib/mailing/templates"] - The folder path where the templates are located.
  * @returns {string} The HTML template string.
  */
 export function getMailHtmlTemplate(
   template_name,
-  template_folder_path = "/src/assets/email-templates"
+  template_folder_path = "src/util/lib/mailing/templates"
 ) {
   const template_path = path.join(
     cwd(),
     template_folder_path,
+    template_name,
     `${template_name}.html`
   );
   const template_string = fs.readFileSync(template_path, "utf-8");
@@ -57,16 +58,17 @@ export function getMailHtmlTemplate(
  * Retrieves the text template for a given mail.
  *
  * @param {string} template_name - The name of the template.
- * @param {string} [template_folder_path="/src/assets/email-templates"] - The folder path where the templates are located.
+ * @param {string} [template_folder_path="/src/util/lib/mailing/templates"] - The folder path where the templates are located.
  * @returns {string} The template string.
  */
 export function getMailTextTemplate(
   template_name,
-  template_folder_path = "/src/assets/email-templates"
+  template_folder_path = "src/util/lib/mailing/templates"
 ) {
   const template_path = path.join(
     cwd(),
     template_folder_path,
+    template_name,
     `${template_name}.txt`
   );
   const template_string = fs.readFileSync(template_path, "utf-8");
