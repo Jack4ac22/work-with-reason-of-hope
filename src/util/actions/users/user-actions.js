@@ -1,7 +1,7 @@
 "use server";
 import { sendRegisterationMail } from "@/util/lib/mailing/templates/registeration/registeration-email.js";
-import registerNewUser from "@/util/db-libraries/users-library/db-register-new-user"
-import findUserByfield from "@/util/db-libraries/users-library/db-find-user"
+import registerNewUser from "@/util/db-libraries/users-library/users-events/db-register-new-user"
+import findUserByfield from "@/util/db-libraries/users-library/users-events/db-find-user"
 import { decodeJWT } from "@/util/lib/jwt/jwt";
 
 const blockedDomains = (process.env.BLOCKED_DOMAINS || "getmoreopportunities.info,growthmarketingnow.info,increasetraffic.shop").split(",");

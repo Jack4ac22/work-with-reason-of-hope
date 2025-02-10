@@ -86,6 +86,16 @@ BEGIN
   WHERE id = NEW.id;
 END;
 `);
+
+mainDB.exec(`
+CREATE TABLE IF NOT EXISTS UserSessions (
+  id TEXT PRIMARY KEY ,
+  user_id INTEGER,
+  session_id TEXT UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+`);
 }
 
 initDb();
