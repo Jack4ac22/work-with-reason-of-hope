@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ActivationForm from "@/components/forms/users/activation-with-token-form";
-import { activateUser } from "@/util/actions/users/user-actions";
+import { activateUser } from "@/lib/actions/users/user-actions";
 
 export default function UserPage() {
   const searchParam = useSearchParams();

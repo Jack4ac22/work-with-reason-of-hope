@@ -1,4 +1,4 @@
-import mainDB from "@/util/db-libraries/users-library/usersDB";
+import mainDB from "@/lib/db/usersDB";
 import crypto from "crypto";
 
 /**

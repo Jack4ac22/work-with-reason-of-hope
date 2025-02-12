@@ -1,6 +1,6 @@
 import 'server-only';
 import { cookies } from 'next/headers';
-import { encodeJWT, decodeJWT } from '@/util/lib/jwt/jwt';
+import { encodeJWT, decodeJWT } from '@/lib/util/jwt/jwt';
 
 const COOKIE_NAME = 'session';
 const COOKIE_EXPIRATION_DAYS = (process.env.JWT_EXPIRES_IN || "7d").split("d")[0];

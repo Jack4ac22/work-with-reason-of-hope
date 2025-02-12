@@ -14,7 +14,7 @@ The system follows a **modular architecture**:
 - **Backend**
   - `util/actions/users/` → Server actions (e.g., `registerUser`).
   - `util/db-libraries/users-library/` → Database functions (e.g., `registerNewUser`).
-  - `util/lib/mailing/` → Email sending functionality.
+  - `lib/util/mailing/` → Email sending functionality.
 
 ---
 
@@ -63,7 +63,7 @@ export default function NewForm({ action }) {
 ### **Example: `pages/new-form-page.jsx`**
 ```javascript
 import NewForm from "@/components/forms/users/NewForm";
-import { handleNewForm } from "@/util/actions/users/user-actions";
+import { handleNewForm } from "@/lib/actions/users/user-actions";
 
 export default function NewFormPage() {
   return <NewForm action={handleNewForm} />;
@@ -77,7 +77,7 @@ export default function NewFormPage() {
 ### **Example: `util/actions/users/user-actions.js`**
 ```javascript
 "use server";
-import saveNewFormData from "@/util/db-libraries/users-library/saveNewFormData";
+import saveNewFormData from "@/lib/db-libraries/users-library/saveNewFormData";
 
 /**
  * Handles new form submission, validates input, and saves to the database.
@@ -109,7 +109,7 @@ export async function handleNewForm(prevState, formData) {
 
 ### **Example: `util/db-libraries/users-library/saveNewFormData.js`**
 ```javascript
-import mainDB from "@/util/db-libraries/users-library/usersDB";
+import mainDB from "@/lib/db/usersDB";
 
 /**
  * Saves new form data to the database.
@@ -137,10 +137,10 @@ CREATE TABLE IF NOT EXISTS NewFormTable (
 ### **Step 6: (Optional) Send an Email Notification**
 If required, integrate **email notifications**.
 
-### **Example: `util/lib/mailing/sendNewFormEmail.js`**
+### **Example: `lib/util/mailing/sendNewFormEmail.js`**
 ```javascript
 "use server";
-import { transporter, getMailOptionsNoCC } from "@/util/lib/mailing/nodemailer";
+import { transporter, getMailOptionsNoCC } from "@/lib/util/mailing/nodemailer";
 
 /**
  * Sends an email notification for a new form submission.

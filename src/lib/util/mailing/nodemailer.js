@@ -50,12 +50,12 @@ export const getMailOptionsNoCC = (to) => {
  * Retrieves the HTML template for a given mail template.
  *
  * @param {string} template_name - The name of the template.
- * @param {string} [template_folder_path="src/util/lib/mailing/templates"] - The folder path where the templates are located.
+ * @param {string} [template_folder_path="src/lib/util/mailing/templates"] - The folder path where the templates are located.
  * @returns {string} The HTML template string.
  */
 export function getMailHtmlTemplate(
   template_name,
-  template_folder_path = "src/util/lib/mailing/templates"
+  template_folder_path = "src/lib/util/mailing/templates"
 ) {
   const template_path = path.join(
     cwd(),
@@ -71,12 +71,12 @@ export function getMailHtmlTemplate(
  * Retrieves the text template for a given mail.
  *
  * @param {string} template_name - The name of the template.
- * @param {string} [template_folder_path="/src/util/lib/mailing/templates"] - The folder path where the templates are located.
+ * @param {string} [template_folder_path="/src/lib/util/mailing/templates"] - The folder path where the templates are located.
  * @returns {string} The template string.
  */
 export function getMailTextTemplate(
   template_name,
-  template_folder_path = "src/util/lib/mailing/templates"
+  template_folder_path = "src/lib/util/mailing/templates"
 ) {
   const template_path = path.join(
     cwd(),

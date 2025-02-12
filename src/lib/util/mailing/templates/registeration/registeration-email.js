@@ -4,10 +4,10 @@ import {
   getMailOptionsNoCC,
   getMailHtmlTemplate,
   getMailTextTemplate,
-} from "@/util/lib/mailing/nodemailer";
-import { logError } from "@/util/db-libraries/logs/db-logs";
+} from "@/lib/util/mailing/nodemailer";
+import { logError } from "@/lib/db-libraries/logs/db-logs";
 
-const templates_folder_path = "/src/util/lib/mailing/templates";
+const templates_folder_path = "/src/lib/util/mailing/templates";
 
 /**
  * Sends a registration confirmation email to a new user.
