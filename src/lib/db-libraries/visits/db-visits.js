@@ -20,3 +20,19 @@ export async function registerVisit(ip, path, method, userAgent, referer) {
     logError(error);
   }
 }
+
+
+/**
+ * Retrieves all visits from the visits table.
+ * @returns {Promise<Array>} A list of visit entries ordered by timestamp in descending order.
+ */
+export async function getVisits() {
+  try {
+    const sql = `SELECT * FROM visits ORDER BY timestamp DESC;`;
+    const stmt = visitsDB.prepare(sql);
+    return stmt.all();
+  }
+  catch (dbError) {
+    console.error("Failed to get visits:", dbError);
+  }
+}
