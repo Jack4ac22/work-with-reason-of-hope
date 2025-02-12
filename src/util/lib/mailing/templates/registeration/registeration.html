@@ -13,7 +13,7 @@
         <p class="text-gray-600 my-2">
           شكرًا لتسجيلك في موقع
           <a
-            href="http://www.reasonofhope.com"
+            href="http://${url}"
             class="underline underline-offset-4 text-blue-500 font-semibold"
             >سبب الرجاء</a
           >.
@@ -24,7 +24,7 @@
         <p class="text-3xl font-bold text-red-500">${email_verification_token}</p>
         <p class="text-gray-600 my-2">أو يمكنك تفعيل حسابك مباشرة من خلال الرابط التالي:</p>
         <a
-          href="http://www.reasonofhope.com/user/activate?token=${jwt_token}"
+          href="http://${url}/user/activate?action=activate_new_user&?token=${jwt_token}"
           class="underline underline-offset-4 text-blue-500 font-semibold"
           >تفعيل الحساب</a
         >
@@ -32,7 +32,7 @@
         <p class="text-gray-600 my-2">
           إذا لم تقم بالتسجيل، الرجاء تجاهل هذا البريد الإلكتروني، أو التواصل معنا عبر
           <a
-            href="http://www.reasonofhope.com/contact"
+            href="http://${url}/contact"
             class="underline underline-offset-4 text-blue-500 font-semibold"
             >نموذج الاتصال</a
           >
@@ -46,7 +46,7 @@
         <p class="text-gray-600 my-2">
           Thank you for registering at
           <a
-            href="http://www.reasonofhope.com"
+            href="http://${url}"
             class="underline underline-offset-4 text-blue-500 font-semibold"
             >Reason of Hope</a
           >.
@@ -57,7 +57,7 @@
         <p class="text-3xl font-bold text-red-500">${email_verification_token}</p>
         <p class="text-gray-600 my-2">Or activate your account directly using the following link:</p>
         <a
-          href="http://www.reasonofhope.com/user/activate?token=${jwt_token}"
+          href="http://${url}/user/activate?action=activate_new_user&?token=${jwt_token}"
           class="underline underline-offset-4 text-blue-500 font-semibold"
           >Activate Account</a
         >
@@ -65,7 +65,7 @@
         <p class="text-gray-600 my-2">
           If you did not register, please ignore this email or contact us using our
           <a
-            href="http://www.reasonofhope.com/contact"
+            href="http://${url}/contact"
             class="underline underline-offset-4 text-blue-500 font-semibold"
             >contact form</a
           >

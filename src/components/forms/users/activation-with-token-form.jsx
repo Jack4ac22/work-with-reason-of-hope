@@ -4,11 +4,9 @@ import { useState } from "react";
 import { useSearchParams } from 'next/navigation';
 
 
-export default function ActivationForm({ action }) {
+export default function ActivationForm({ token, action }) {
   const [state, formAction] = useActionState(action, {});
   const [language, setLanguage] = useState("en");
-  const searchParam = useSearchParams();
-  const token = searchParam.get('token');
   const labels = {
     en: {
       password: "Password",
@@ -33,10 +31,13 @@ export default function ActivationForm({ action }) {
 
   const getError = (fieldName) =>
     state?.errors?.find((error) => error.name === fieldName);
+
   if (!token) {
     return (
       <>
         {/* TODO: add a new form to manually validate using the token sent by email and the email address after validation generate a jwt token and addit to the url so the other form will appear to get to password setup */}
+        <p className="text-lightShade-800 dark:text-lightShade-100">TBD - Request a new token or use the email and the sent token.</p>
+
       </>
     );
   }

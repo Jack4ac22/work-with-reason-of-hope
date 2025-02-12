@@ -87,7 +87,7 @@ BEGIN
 END;
 `);
 
-mainDB.exec(`
+  mainDB.exec(`
 CREATE TABLE IF NOT EXISTS UserSessions (
   id TEXT PRIMARY KEY ,
   user_id INTEGER,
@@ -95,6 +95,16 @@ CREATE TABLE IF NOT EXISTS UserSessions (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+`);
+
+  mainDB.exec(`
+  CREATE TABLE IF NOT EXISTS ErrorsLogs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    message TEXT,
+    stack TEXT default NULL,
+    ip_address TEXT default NULL COLLATE NOCASE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 }
 

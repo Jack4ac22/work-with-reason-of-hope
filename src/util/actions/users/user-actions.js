@@ -2,10 +2,11 @@
 import { sendRegisterationMail } from "@/util/lib/mailing/templates/registeration/registeration-email.js";
 import registerNewUser from "@/util/db-libraries/users-library/users-events/db-register-new-user"
 import findUserByfield from "@/util/db-libraries/users-library/users-events/db-find-user"
-import { decodeJWT } from "@/util/lib/jwt/jwt";
+import { decodeJWT, encodeJWT } from "@/util/lib/jwt/jwt";
 
 const blockedDomains = (process.env.BLOCKED_DOMAINS || "getmoreopportunities.info,growthmarketingnow.info,increasetraffic.shop").split(",");
 const blockedWords = (process.env.BLOCKED_WORDS || "growth,marketing,formula,opportunity,profit,eco,crowdfunding").split(",");
+
 
 /**
  * Checks for spam links in a given message.
@@ -13,7 +14,7 @@ const blockedWords = (process.env.BLOCKED_WORDS || "growth,marketing,formula,opp
  * @param {string[]} blockedWords - List of words considered as spam.
  * @returns {boolean} True if spam is found, otherwise false.
  */
-function checkLinksForSpam(message, blockedWords) {
+function checkTextForSpam(message, blockedWords) {
   const urlRegex = /https?:\/\/[^\s]+/gi;
   const links = message.match(urlRegex) || [];
   const spamWordsRegex = new RegExp(blockedWords.join("|"), "i");
@@ -37,17 +38,23 @@ export async function registerUser(prevState, formData) {
   const fullName = formData.get("fullName");
   const email = formData.get("email");
   const resume = formData.get("resume");
-  const roles = formData.getAll("role"); // `getAll` to handle multiple checkboxes
+  const roles = formData.getAll("role");
   const agreement = formData.get("agreement");
-
   const errors = [];
 
   // Validate Full Name
-  if (!fullName || fullName.trim() === "") {
-    errors.push({ name: "fullName", message: "Full Name is required - الإسم الكامل مطلوب" });
-  }
+  (fullName || fullName.trim() === "") ?? errors.push({ name: "fullName", message: "Full Name is required - الإسم الكامل مطلوب" });
 
   // Validate Email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailDomain = email?.split("@")[1]?.toLowerCase();
+  const emailUsername = email?.split("@")[0]?.toLowerCase();
+  if (!email || email.trim() === "" || !emailRegex.test(email) || blockedDomains.includes(emailDomain) || blockedWords.some((word) => emailUsername.includes(word) || emailDomain.includes(word))) {
+    errors.push({
+      name: "email",
+      message: "This field is required or contains invalid data - هذا الحقل مطلوب أو يحتوي على بيانات غير صالحة",
+    });
+  }
   const user = await findUserByfield("email", email);
   if (user) {
     errors.push({
@@ -56,24 +63,9 @@ export async function registerUser(prevState, formData) {
       action: "login",
     });
   }
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const emailDomain = email?.split("@")[1]?.toLowerCase();
-  const emailUsername = email?.split("@")[0]?.toLowerCase();
-  if (
-    !email ||
-    email.trim() === "" ||
-    !emailRegex.test(email) ||
-    blockedDomains.includes(emailDomain) ||
-    blockedWords.some((word) => emailUsername.includes(word) || emailDomain.includes(word))
-  ) {
-    errors.push({
-      name: "email",
-      message: "This field is required or contains invalid data - هذا الحقل مطلوب أو يحتوي على بيانات غير صالحة",
-    });
-  }
 
   // Validate Resume
-  if (!resume || resume.trim() === "" || checkLinksForSpam(resume, blockedWords)) {
+  if (!resume || resume.trim() === "" || checkTextForSpam(resume, blockedWords)) {
     errors.push({
       name: "resume",
       message: "Resume is required and must not contain inappropriate content - السيرة الذاتية مطلوبة ويجب أن لا تحتوي على محتوى غير لائق",
@@ -113,17 +105,19 @@ export async function registerUser(prevState, formData) {
   const data = { fullName, email, resume, roles, agreement };
   const newUser = await registerNewUser(data);
   const response = { newUser, message: "User has been registered successfully!" };
-
+  const jwt_token_payload = { 'email': newUser.email, 'token': newUser.email_verification_token };
+  const jwt_token = encodeJWT(jwt_token_payload);
   try {
-    sendRegisterationMail({ email, email_verification_token: newUser.email_verification_token, jwt_token: newUser.jwt_token });
+    sendRegisterationMail({ email, email_verification_token: newUser.email_verification_token, jwt_token: jwt_token });
   } catch (error) {
-    console.log(error);
-    // log errors to logs table
-
+    await logError(error.message, error?.stack);
   }
-
   return { prevState, response };
 }
+
+
+
+
 
 /**
  * Activates a user account by validating the token and setting a new password.
@@ -141,24 +135,24 @@ export async function activateUser(prevState, formData) {
   let user = null;
 
   const tokenContent = decodeJWT(token);
-  if (!tokenContent) {
+  if (!token || !tokenContent) {
     errors.push({
       name: "token",
       message: "Invalid token - توكن غير صالح.",
+      action: "login",
     });
-  }
-
-  if (tokenContent.email) {
-    user = await findUserByfield("email", tokenContent.email);
-    if (!user) {
-      errors.push({
-        name: "token",
-        message: "Invalid token - توكن غير صالح.",
-      });
+  } else {
+    if (tokenContent?.email || user?.is_active || (user?.email_verification_token !== tokenContent?.token)) {
+      user = await findUserByfield("email", tokenContent?.email);
+      if (!user) {
+        errors.push({
+          name: "token",
+          message: "Invalid token - توكن غير صالح.",
+          action: "login",
+        });
+      }
     }
   }
-
-
 
   if (!password || password.trim() === "") {
     errors.push({
@@ -185,10 +179,7 @@ export async function activateUser(prevState, formData) {
     });
   }
 
-
-
   // username is optional but it should be unique
-
   if (userName) {
     const existingUser = await findUserByfield("username", userName);
     if (existingUser) {
@@ -198,21 +189,6 @@ export async function activateUser(prevState, formData) {
       });
     }
   }
-
-
-  // check the user is not already activated
-
-  if (user) {
-    if (user.is_active) {
-      errors.push({
-        name: "user",
-        message: "User is already activated - المستخدم مفعل بالفعل.",
-        action: "login",
-      });
-    }
-  }
-
-
 
   if (errors.length > 0) {
     return {
@@ -224,7 +200,9 @@ export async function activateUser(prevState, formData) {
       }, errors
     };
   }
+
   const data = { password, token, user };
+
 
 
   const response = { message: "User has been activated successfully!" };
