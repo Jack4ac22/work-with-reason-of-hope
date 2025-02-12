@@ -1,3 +1,4 @@
+'use client';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import GoogleAnalytics from '@/components/common/google-analytics';
@@ -7,6 +8,7 @@ import { ThemeProvider } from 'next-themes'
 import { LayoverGlobalProvider } from "@/context/layover/LayoverGlobalContext";
 import { PreferencesGlobalProvider } from '@/context/preferences/PreferencesGlobalContext';
 import MainFooter from "@/components/common/ui/main-footer";
+import { useEffect } from "react";
 
 
 
@@ -36,12 +38,19 @@ const roboto = Roboto(
   }
 );
 
-export const metadata = {
-  title: "Reason Of Hope | WWU",
-  description: "Together we provide what is needed to help people to access The Word of God and understand it for themselves.",
-};
+// export const metadata = {
+//   title: "Reason Of Hope | WWU",
+//   description: "Together we provide what is needed to help people to access The Word of God and understand it for themselves.",
+// };
 
 export default function RootLayout({ children }) {
+  useEffect(() => {
+    // Call the API with middleware-passed headers
+    fetch("/api/log-visit", { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => console.log("Visit logged:", data))
+      .catch((err) => console.error("Logging failed:", err));
+  }, []);
   return (
     <html lang="ar" dir="rtl" className={` scroll-smooth ${markazi_text.className} relative`}>
       <body className="uni-background transition-all duration-200">

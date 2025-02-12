@@ -1,7 +1,5 @@
 import logsDB from "@/lib/db/logsDB";
 
-
-
 /**
  * Logs an error in logs.db
  * @param {Error} error - The error object.

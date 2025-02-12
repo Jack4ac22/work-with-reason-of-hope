@@ -1,4 +1,5 @@
 "use server";
+import { logError } from "@/lib/db-libraries/logs/db-logs";
 import { sendRegisterationMail } from "@/lib/util/mailing/templates/registeration/registeration-email.js";
 import registerNewUser from "@/lib/db-libraries/users-library/users-events/db-register-new-user"
 import findUserByfield from "@/lib/db-libraries/users-library/users-events/db-find-user"
@@ -54,14 +55,16 @@ export async function registerUser(prevState, formData) {
       name: "email",
       message: "This field is required or contains invalid data - هذا الحقل مطلوب أو يحتوي على بيانات غير صالحة",
     });
-  }
-  const user = await findUserByfield("email", email);
-  if (user) {
-    errors.push({
-      name: "email",
-      message: "This email is already registered - هذا البريد الالكتروني مسجل بالفعل",
-      action: "login",
-    });
+  } else {
+
+    const user = await findUserByfield("email", email);
+    if (user) {
+      errors.push({
+        name: "email",
+        message: "This email is already registered - هذا البريد الالكتروني مسجل بالفعل",
+        action: "login",
+      });
+    }
   }
 
   // Validate Resume
