@@ -1,10 +1,9 @@
 import sql from "better-sqlite3";
 
-const enviroment = process.env.NODE_ENV || process.env.WORKING_ENV || "development";
+const enviroment = process.env.WORKING_ENV || process.env.NODE_ENV ||  "development";
 const srcFolderPath = process.cwd();
-const dbPath = enviroment === "development" ? "/src/assets/sqlite/development/visits.db" : "/src/assets/sqlite/visits.db";
-// Initialize separate databases
-
+const dbPath = enviroment === "development" ? "/src/assets/sqlite/development/visits.db" : "visits.db";
+console.log(process.env.NODE_ENV + " " + process.env.WORKING_ENV);
 const visitsDB = new sql(srcFolderPath + dbPath);
 async function initDb() {
 console.log(srcFolderPath + dbPath);

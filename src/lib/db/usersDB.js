@@ -4,8 +4,9 @@ import sql from "better-sqlite3";
 // get the path from the cwd and expect the server structure
 
 
-const enviroment = process.env.NODE_ENV || process.env.WORKING_ENV || "development";
-const dbPath = enviroment === "development" ? "src/assets/sqlite/development/main.db" : "src/assets/sqlite/main.db";
+const enviroment = process.env.WORKING_ENV || process.env.NODE_ENV ||  "development";
+console.log(process.env.NODE_ENV + " " + process.env.WORKING_ENV);
+const dbPath = enviroment === "development" ? "src/assets/sqlite/development/main.db" : "main.db";
 const mainDB = new sql(dbPath);
 
 function initDb() {
