@@ -2,7 +2,6 @@ import sql from "better-sqlite3";
 
 const enviroment = process.env.WORKING_ENV || process.env.NODE_ENV || "development";
 const dbPath = enviroment === "development" ? "src/assets/sqlite/development/logs.db" : "logs.db";
-console.log(process.env.NODE_ENV + " " + process.env.WORKING_ENV);
 
 const logsDB = new sql(dbPath);
 async function initDb() {
