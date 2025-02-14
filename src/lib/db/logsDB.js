@@ -1,7 +1,7 @@
 import sql from "better-sqlite3";
-
-const enviroment = process.env.WORKING_ENV || process.env.NODE_ENV || "development";
-const dbPath = enviroment === "development" ? "src/assets/sqlite/development/logs.db" : "logs.db";
+import path from "path";
+import { baseDir } from "@/lib/db/db-helper";
+const dbPath = path.join(baseDir, "logs.db");
 
 const logsDB = new sql(dbPath);
 async function initDb() {

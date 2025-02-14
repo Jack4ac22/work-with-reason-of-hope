@@ -1,11 +1,8 @@
 import sql from "better-sqlite3";
+import path from "path";
+import { baseDir } from "@/lib/db/db-helper";
+const dbPath = path.join(baseDir, "main.db");
 
-// get the envicoment variables from the .env file
-// get the path from the cwd and expect the server structure
-
-
-const enviroment = process.env.WORKING_ENV || process.env.NODE_ENV ||  "development";
-const dbPath = enviroment === "development" ? "src/assets/sqlite/development/main.db" : "main.db";
 const mainDB = new sql(dbPath);
 
 function initDb() {

@@ -1,10 +1,10 @@
 import sql from "better-sqlite3";
-
-const enviroment = process.env.WORKING_ENV || process.env.NODE_ENV ||  "production";
-const dbPath = enviroment === "development" ? "/src/assets/sqlite/development/visits.db" : "visits.db";
-const visitsDB = new sql( dbPath);
+import path from "path";
+import { baseDir } from "@/lib/db/db-helper";
+console.log("baseDir: ", baseDir);
+const dbPath = path.join(baseDir, "visits.db");
+const visitsDB = new sql(dbPath);
 async function initDb() {
-console.log(srcFolderPath + dbPath);
   // Create tables if they don't exist
   visitsDB.exec(`
     CREATE TABLE IF NOT EXISTS visits (
