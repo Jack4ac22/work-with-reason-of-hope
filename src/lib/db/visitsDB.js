@@ -1,9 +1,8 @@
 import sql from "better-sqlite3";
 
 const enviroment = process.env.WORKING_ENV || process.env.NODE_ENV ||  "production";
-const srcFolderPath = process.cwd();
 const dbPath = enviroment === "development" ? "/src/assets/sqlite/development/visits.db" : "visits.db";
-const visitsDB = new sql(srcFolderPath + dbPath);
+const visitsDB = new sql( dbPath);
 async function initDb() {
 console.log(srcFolderPath + dbPath);
   // Create tables if they don't exist
