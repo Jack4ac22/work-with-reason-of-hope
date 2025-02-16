@@ -162,7 +162,7 @@ export default function RegistrationForm({ action }) {
                           <textarea
                             name="resume"
                             id="resume"
-                            className={`h-20 form-input  ${getError("fullName") ? "form-input-error" : "form-input-border"}`}
+                            className={`h-20 form-input  ${getError("resume") ? "form-input-error" : "form-input-border"}`}
                             placeholder={
                               language === "en"
                                 ? currentLabels.resumePlaceholder

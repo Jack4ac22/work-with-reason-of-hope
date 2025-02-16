@@ -1,10 +1,7 @@
 "use server";
-import { logError } from "@/lib/db-libraries/logs/db-logs";
 import { sendRegisterationMail } from "@/lib/util/mailing/templates/registeration/registeration-email.js";
-import registerNewUser from "@/lib/db-libraries/users-library/users-events/db-register-new-user"
-import findUserByfield from "@/lib/db-libraries/users-library/users-events/db-find-user"
 import { decodeJWT, encodeJWT } from "@/lib/util/jwt/jwt";
-
+import User from "@/lib/models/User";
 const blockedDomains = (process.env.BLOCKED_DOMAINS || "getmoreopportunities.info,growthmarketingnow.info,increasetraffic.shop").split(",");
 const blockedWords = (process.env.BLOCKED_WORDS || "growth,marketing,formula,opportunity,profit,eco,crowdfunding").split(",");
 
@@ -43,8 +40,13 @@ export async function registerUser(prevState, formData) {
   const agreement = formData.get("agreement");
   const errors = [];
 
-  // Validate Full Name
-  (fullName || fullName.trim() === "") ?? errors.push({ name: "fullName", message: "Full Name is required - الإسم الكامل مطلوب" });
+  // check null or empty string 
+  if (!fullName || fullName.trim() === "") {
+    errors.push({
+      name: "fullName",
+      message: "This field is required or contains invalid data - هذا الحقل مطلوب أو يحتوي على بيانات غير صالحة",
+    })
+  }
 
   // Validate Email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,7 +59,7 @@ export async function registerUser(prevState, formData) {
     });
   } else {
 
-    const user = await findUserByfield("email", email);
+    const user = email ? await User.findOne({ email: email }) : null;
     if (user) {
       errors.push({
         name: "email",
@@ -106,14 +108,15 @@ export async function registerUser(prevState, formData) {
 
   // const response = await sendContactMail({ fullName, email, resume, roles });
   const data = { fullName, email, resume, roles, agreement };
-  const newUser = await registerNewUser(data);
+  console.log("data", data);
+  const newUser = await User.create(data);
   const response = { newUser, message: "User has been registered successfully!" };
   const jwt_token_payload = { 'email': newUser.email, 'token': newUser.email_verification_token };
   const jwt_token = encodeJWT(jwt_token_payload);
   try {
-    sendRegisterationMail({ email, email_verification_token: newUser.email_verification_token, jwt_token: jwt_token });
+    // sendRegisterationMail({ email, email_verification_token: newUser.email_verification_token, jwt_token: jwt_token });
   } catch (error) {
-    await logError(error.message, error?.stack);
+    // await logError(error.message, error?.stack);
   }
   return { prevState, response };
 }
@@ -184,7 +187,7 @@ export async function activateUser(prevState, formData) {
 
   // username is optional but it should be unique
   if (userName) {
-    const existingUser = await findUserByfield("username", userName);
+    // const existingUser = await findUserByfield("username", userName);
     if (existingUser) {
       errors.push({
         name: "username",

@@ -5,7 +5,7 @@ import {
   getMailHtmlTemplate,
   getMailTextTemplate,
 } from "@/lib/util/mailing/nodemailer";
-import { logError } from "@/lib/db-libraries/logs/db-logs";
+// import { logError } from "@/lib/db-libraries/logs/db-logs";
 
 const templates_folder_path = "/src/lib/util/mailing/templates";
 
@@ -46,7 +46,7 @@ export const sendRegisterationMail = async (data) => {
     });
     return info;
   } catch (error) {
-    await logError("Email request failed", error);
+    // await logError("Email request failed", error);
     return error;
   }
 };

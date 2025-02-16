@@ -44,13 +44,6 @@ const roboto = Roboto(
 // };
 
 export default function RootLayout({ children }) {
-  useEffect(() => {
-    // Call the API with middleware-passed headers
-    fetch("/api/log-visit", { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => console.log("Visit logged:", data))
-      .catch((err) => console.error("Logging failed:", err));
-  }, []);
   return (
     <html lang="ar" dir="rtl" className={` scroll-smooth ${markazi_text.className} relative`}>
       <body className="uni-background transition-all duration-200">
