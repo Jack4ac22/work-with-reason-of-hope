@@ -2,9 +2,9 @@
 import { sendRegisterationMail } from "@/lib/util/mailing/templates/registeration/registeration-email.js";
 import { decodeJWT, encodeJWT } from "@/lib/util/jwt/jwt";
 import User from "@/lib/models/User";
+import connectDb from "@/lib/db/db";
 const blockedDomains = (process.env.BLOCKED_DOMAINS || "getmoreopportunities.info,growthmarketingnow.info,increasetraffic.shop").split(",");
 const blockedWords = (process.env.BLOCKED_WORDS || "growth,marketing,formula,opportunity,profit,eco,crowdfunding").split(",");
-
 
 /**
  * Checks for spam links in a given message.
@@ -26,6 +26,7 @@ function checkTextForSpam(message, blockedWords) {
   return false;
 }
 
+
 /**
  * Registers a new user with validation and generates verification tokens.
  * @param {Object} prevState - Previous state of the form.
@@ -33,6 +34,8 @@ function checkTextForSpam(message, blockedWords) {
  * @returns {Object} Updated state with success message or errors.
  */
 export async function registerUser(prevState, formData) {
+  await connectDb();
+
   const fullName = formData.get("fullName");
   const email = formData.get("email");
   const resume = formData.get("resume");
@@ -58,8 +61,8 @@ export async function registerUser(prevState, formData) {
       message: "This field is required or contains invalid data - هذا الحقل مطلوب أو يحتوي على بيانات غير صالحة",
     });
   } else {
-
-    const user = email ? await User.findOne({ email: email }) : null;
+    let user = null
+    if (email) { const user = await User.findOne({ email: email }); }
     if (user) {
       errors.push({
         name: "email",
@@ -114,7 +117,7 @@ export async function registerUser(prevState, formData) {
   const jwt_token_payload = { 'email': newUser.email, 'token': newUser.email_verification_token };
   const jwt_token = encodeJWT(jwt_token_payload);
   try {
-    // sendRegisterationMail({ email, email_verification_token: newUser.email_verification_token, jwt_token: jwt_token });
+    sendRegisterationMail({ email, email_verification_token: newUser.email_verification_token, jwt_token: jwt_token });
   } catch (error) {
     // await logError(error.message, error?.stack);
   }

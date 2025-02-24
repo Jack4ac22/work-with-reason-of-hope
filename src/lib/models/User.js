@@ -6,15 +6,14 @@ const UserSchema = new Schema({
   username: { type: String, unique: true, sparse: true },
   fullName: { type: String, default: null },
   email: { type: String, unique: true, required: true },
-  passwordHash: { type: String, required: true },
+  password: { type: String, default: null },
   phone: {
-    number: { type: String, unique: true, sparse: true },
+    number: { type: String, unique: true, sparse: true, default: null },
     verified: { type: Boolean, default: false }
   },
   birthDate: { type: Date, default: null },
 
   roles: [{ type: String, enum: ['superadmin', 'admin', 'editor', 'translator', 'proofreader', 'moderator'] }],
-
   profile: {
     picture: { type: String, default: null },
     bio: { type: String, default: null },

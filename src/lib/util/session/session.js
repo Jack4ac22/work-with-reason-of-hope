@@ -1,81 +1,89 @@
-import 'server-only';
-import { cookies } from 'next/headers';
-import { encodeJWT, decodeJWT } from '@/lib/util/jwt/jwt';
+'use server';
+import { Lucia } from "lucia";
+import { MongodbAdapter } from "@lucia-auth/adapter-mongodb";
+import mongoose from "@/lib/db";
+import { cookies } from "next/headers";
 
-const COOKIE_NAME = 'session';
-const COOKIE_EXPIRATION_DAYS = (process.env.JWT_EXPIRES_IN || "7d").split("d")[0];
+// Define collections for users and sessions
+const userCollection = mongoose.connection.collection("users");
+const sessionCollection = mongoose.connection.collection("sessions");
 
-/**
- * Creates a new session or refreshes an existing one.
- * Steps:
- * 1. Reads the previous session if it exists and decodes the JWT token.
- * 2. If the session is invalid, deletes the session and creates a new one.
- * 3. If no session exists, creates a new session.
- * 
- * @param {Object} payload - The data to store in the session.
- * @returns {string} The newly created session token.
- */
-export async function createSession(payload = {}) {
-  const expiresAt = new Date(Date.now() + COOKIE_EXPIRATION_DAYS * 24 * 60 * 60 * 1000);
-  const sessionToken = encodeJWT({ ...payload, expiresAt });
-  const cookieStore = cookies();
+// Setup Lucia with MongoDB
+const adapter = new MongodbAdapter(userCollection, sessionCollection);
 
-  cookieStore.set(COOKIE_NAME, sessionToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production' || process.env.WORKING_ENV === 'production',
-    expires: expiresAt,
-    sameSite: 'lax',
-    path: '/',
-  });
-  return sessionToken;
+const lucia = new Lucia(adapter, {
+  sessionCookie: {
+    expires: false,
+    attributes: {
+      secure: process.env.NODE_ENV === "production",
+    },
+  },
+});
+
+// Create a session for the authenticated user
+export async function createAuthSession(userId) {
+  const session = await lucia.createSession(userId, {});
+  const sessionCookie = lucia.createSessionCookie(session.id);
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes
+  );
 }
 
-/**
- * Updates the session with new data.
- * 
- * @param {Object} new_payload - The updated data for the session.
- * @returns {string} The updated session token.
- */
-export async function updateSession(new_payload = {}) {
-  const currentSession = await getSession();
-  const updatedSession = { ...currentSession, ...new_payload };
-  return await createSession(updatedSession);
-}
-
-/**
- * Retrieves the session data.
- * 
- * @param {string|null} key - A specific key to retrieve from the session.
- * @returns {Object|string|null} The session data or a specific key value.
- */
-export async function getSession(key = null) {
-  const cookieStore = cookies();
-  const sessionToken = cookieStore.get(COOKIE_NAME)?.value;
-  if (!sessionToken) return null;
-
-  const decoded = decodeJWT(sessionToken);
-  if (!decoded || new Date(decoded.expiresAt) < new Date()) {
-    await deleteSession();
-    return null;
+// Verify authentication session
+export async function verifyAuth() {
+  const sessionCookie = cookies().get(lucia.sessionCookieName);
+  if (!sessionCookie) {
+    return {
+      user: null,
+      session: null,
+    };
   }
+  const sessionId = sessionCookie.value;
 
-  return key ? decoded[key] : decoded;
-}
-
-/**
- * Deletes the session.
- * 
- * @param {string|null} key - A specific key to remove from the session, or delete the session entirely.
- */
-export async function deleteSession(key = null) {
-  const cookieStore = cookies();
-  if (key) {
-    const sessionData = await getSession();
-    if (sessionData && key in sessionData) {
-      delete sessionData[key];
-      await createSession(sessionData);
+  if (!sessionId) {
+    return {
+      user: null,
+      session: null,
+    };
+  }
+  try {
+    const result = await lucia.validateSession(sessionId);
+    if (result.session && result.session.fresh) {
+      const sessionCookie = lucia.createSessionCookie(result.session.id);
+      cookies().set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes
+      );
     }
-  } else {
-    cookieStore.delete(COOKIE_NAME);
+    if (!result.session) {
+      const sessionCookie = lucia.createBlankSessionCookie();
+      cookies().set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes
+      );
+    }
+    return result;
+  } catch (error) {
+    console.error("Session validation error:", error);
+    return { user: null, session: null };
   }
+}
+
+// Destroy user session
+export async function destroySession() {
+  const { session } = await verifyAuth();
+  if (!session) {
+    return { error: "Unauthorized" };
+  }
+  await lucia.invalidateSession(session.id);
+  const sessionCookie = lucia.createBlankSessionCookie();
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes
+  );
 }
