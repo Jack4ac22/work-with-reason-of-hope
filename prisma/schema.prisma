@@ -1,0 +1,100 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+model Role {
+  id  String   @default(cuid()) @unique
+  name        String   @id @unique
+  description String?
+  userRoles   UserRole[]
+}
+
+model User {
+  id                       String  @id @unique @default(cuid())
+  username                 String?  @unique 
+  email                    String   @unique
+  password                 String?  
+  fullName                 String?  
+  phoneNumber              String?
+  dateOfBirth              String?  // Consider using DateTime if you have proper date values
+  profilePicture           String? 
+  lastLogin                DateTime?
+  isActive                 Boolean  @default(false)
+  isVerified               Boolean  @default(false)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @default(now()) @updatedAt
+  lastUpdate               DateTime @default(now()) @updatedAt
+  twoFactorEnabled         Boolean  @default(false)
+  twoFactorSecret          String? 
+  passwordResetToken       String? 
+  passwordResetExpiry      DateTime?
+  loginToken               String?
+  loginTokenExpiry         DateTime?
+  country                  String? 
+  state                    String? 
+  city                     String? 
+  postalCode               String? 
+  address                  String? 
+  languagePreference       String? 
+  timezone                 String? 
+  notificationPreferences  String? 
+  lastPasswordChange       DateTime?
+  failedLoginAttempts      Int      @default(0)
+  accountLockedUntil       DateTime?
+  lastActivity             DateTime?
+  emailVerificationToken   String? 
+  emailVerificationExpiry  DateTime?
+  phoneNumberVerified      Boolean  @default(false)
+  bio                      String? 
+  websiteUrl               String? 
+  customAttributes         String?
+  // Relation fields:
+  userRoles        UserRole[]       // For roles directly assigned to the user
+  changedUserRoles UserRole[] @relation("UserRoleChangedBy") // For role assignments this user has approved/changed
+}
+
+model UserRole {
+  userId    String
+  roleId    String
+  status    RoleStatus   @default(REQUESTED)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  lastStatus RoleStatus?
+  changedBy  String?   // Must be of the same type as User.id
+  changeNote String?
+
+  // Relations
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role          Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  // The changedByUser relation uses an explicit relation name. The field "changedBy" is a foreign key
+  // referencing User.id, so we add the corresponding back relation on User (changedUserRoles).
+  changedByUser User?  @relation("UserRoleChangedBy", fields: [changedBy], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum Status {
+  DRAFT
+  WIP
+  PUBLISHED
+  REPORTED
+  INVESTIGATION
+  RETURNEDTOEDIT
+}
+
+enum RoleStatus {
+  REQUESTED
+  APPROVED
+  PROVOKED
+  REJECTED
+}

@@ -1,8 +1,9 @@
 "use server";
 import { sendRegisterationMail } from "@/lib/util/mailing/templates/registeration/registeration-email.js";
 import { decodeJWT, encodeJWT } from "@/lib/util/jwt/jwt";
-import User from "@/lib/models/User";
-import connectDb from "@/lib/db/db";
+import { PrismaClient } from "@prisma/client";
+import { generateRandomDigits } from "@/lib/util/helpers/generators";
+
 const blockedDomains = (process.env.BLOCKED_DOMAINS || "getmoreopportunities.info,growthmarketingnow.info,increasetraffic.shop").split(",");
 const blockedWords = (process.env.BLOCKED_WORDS || "growth,marketing,formula,opportunity,profit,eco,crowdfunding").split(",");
 
@@ -34,7 +35,7 @@ function checkTextForSpam(message, blockedWords) {
  * @returns {Object} Updated state with success message or errors.
  */
 export async function registerUser(prevState, formData) {
-  await connectDb();
+  const prisma = new PrismaClient();
 
   const fullName = formData.get("fullName");
   const email = formData.get("email");
@@ -62,7 +63,7 @@ export async function registerUser(prevState, formData) {
     });
   } else {
     let user = null
-    if (email) { const user = await User.findOne({ email: email }); }
+    if (email) { user = await prisma.user.findUnique({ where: { email } }); }
     if (user) {
       errors.push({
         name: "email",
@@ -108,18 +109,68 @@ export async function registerUser(prevState, formData) {
     };
   }
 
+  // match roles with available roles
+  const availableRoles = await prisma.role.findMany({
+    select: {
+      name: true,
+      id: true
+    }
+  });
+  const userRoles = roles.map((role) => {
+    const matchedRole = availableRoles.find((availableRole) => availableRole.name === role.toUpperCase());
+    if (matchedRole) {
+      return {
+        roleId: matchedRole.id,
+        status: "REQUESTED"
+      };
+    }
+  })
 
-  // const response = await sendContactMail({ fullName, email, resume, roles });
-  const data = { fullName, email, resume, roles, agreement };
-  console.log("data", data);
-  const newUser = await User.create(data);
-  const response = { newUser, message: "User has been registered successfully!" };
-  const jwt_token_payload = { 'email': newUser.email, 'token': newUser.email_verification_token };
+  console.log(userRoles);
+  const email_verification_token = generateRandomDigits(6);
+
+  const result = await prisma.$transaction(async (prisma) => {
+    // First operation: create a user
+    const newUser = await prisma.user.create({
+      data: {
+        fullName: fullName,
+        email: email,
+        bio: resume,
+        emailVerificationToken: email_verification_token
+      }
+    });
+
+    const userRolesResult = await prisma.userRole.createMany({
+      data: userRoles.map((userRole) => {
+        return {
+          userId: newUser.id,
+          roleId: userRole.roleId,
+          status: userRole.status
+        }
+      })
+    })
+    console.log(userRolesResult);
+    const userWithRoles = await prisma.user.findUnique({
+      where: { id: newUser.id },
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
+    console.log(userWithRoles);
+    return newUser
+  });
+  const response = { result, message: "User has been registered successfully!" };
+  const jwt_token_payload = { 'email': result.email, 'token': result.emailVerificationToken, 'id': result.id };
   const jwt_token = encodeJWT(jwt_token_payload);
   try {
-    sendRegisterationMail({ email, email_verification_token: newUser.email_verification_token, jwt_token: jwt_token });
+    sendRegisterationMail({ email, email_verification_token: result.emailVerificationToken, jwt_token: jwt_token });
   } catch (error) {
     // await logError(error.message, error?.stack);
+    console.log(error);
   }
   return { prevState, response };
 }
