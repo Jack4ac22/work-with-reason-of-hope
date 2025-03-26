@@ -1,26 +1,17 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import { PrismaClient } from "@prisma/client/edge";
+import { withAccelerate } from "@prisma/extension-accelerate";
 
-dotenv.config();
+// Learn more about instantiating PrismaClient in Next.js here:
+// https://www.prisma.io/docs/data-platform/accelerate/getting-started
 
-let conntected = false;
-const MONGODB_URI = process.env.MONGODE_URI;
-const connectDb = async () => {
-  mongoose.set("strictQuery", true);
-  if (conntected) {
-    console.log("Database already connected");
-    return;
-  }
-  try {
-    await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    conntected = true;
-    console.log("Database connected");
-  } catch (error) {
-    console.error("Database connection failed", error);
-  }
+const prismaClientSingleton = () => {
+  return new PrismaClient().$extends(withAccelerate());
 };
 
-export default connectDb;
+const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+
+export default prisma;
+
+if (process.env.NODE_ENV !== "production") {
+  globalThis.prismaGlobal = prisma;
+}
