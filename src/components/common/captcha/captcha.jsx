@@ -88,40 +88,53 @@ export default function ReCaptcha({ onVerified, action }) {
   const SecondNumberIcon = numberIconMap[secondNumber] || (() => <span>{secondNumber}</span>);
   console.log(firstNumber, SecondNumberIcon, operator, userAnswer);
   return (
-    <div className="captcha-container p-4 border rounded shadow">
-      <p className="mb-4 font-semibold">Verify you're human:</p>
-      <form action={formAction}>
-        <div className="captcha-problem" >
-          <input type="hidden" name="firstNumber" value={firstNumber} />
-          <input type="hidden" name="secondNumber" value={secondNumber} />
-          <input type="hidden" name="operation" value={operator} />
-          {/* Display the first number as an icon */}
-          <FirstNumberIcon />
-          {/* Display the operator icon */}
-          {operator === "+" ? <TbPlus /> : <TbMinus />}
-          {/* Display the second number as an icon */}
-          <SecondNumberIcon />
-          {/* Display equals sign as text (or use an icon if desired) */}
-          <span>=</span>
-        </div>
-        <div className="mt-4">
-          <input
-            type="number"
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-            placeholder="Answer"
-            required
-            className="p-2 text-base border rounded w-full"
-          />
-        </div>
-        <div className="mt-4">
-          <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded">
-            Verify
-          </button>
-        </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-      </form>
-      {verified && <p style={{ color: "green", marginTop: "1rem" }}>Captcha verified!</p>}
-    </div>
+    <>
+      {
+        state?.response ? (
+            <div className="form-wrapper">
+              <div>
+                <p>{state?.response?.message}</p>
+              </div>
+            </div>
+        ) : (
+          <div className="captcha-container p-4 border rounded shadow">
+            <p className="mb-4 font-semibold">Verify you're human:</p>
+            <form action={formAction}>
+              <div className="captcha-problem" >
+                <input type="hidden" name="firstNumber" value={firstNumber} />
+                <input type="hidden" name="secondNumber" value={secondNumber} />
+                <input type="hidden" name="operation" value={operator} />
+                {/* Display the first number as an icon */}
+                <FirstNumberIcon />
+                {/* Display the operator icon */}
+                {operator === "+" ? <TbPlus /> : <TbMinus />}
+                {/* Display the second number as an icon */}
+                <SecondNumberIcon />
+                {/* Display equals sign as text (or use an icon if desired) */}
+                <span>=</span>
+              </div>
+              <div className="mt-4">
+                <input
+                  name="userAnswer"
+                  type="number"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  placeholder="Answer"
+                  required
+                  className="p-2 text-base border rounded w-full"
+                />
+              </div>
+              <div className="mt-4">
+                <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded">
+                  Verify
+                </button>
+              </div>
+              {error && <p style={{ color: "red" }}>{error}</p>}
+            </form>
+            {verified && onVerified() && <p style={{ color: "green", marginTop: "1rem" }}>Captcha verified!</p>}
+          </div>
+        )
+      }
+    </>
   );
 }

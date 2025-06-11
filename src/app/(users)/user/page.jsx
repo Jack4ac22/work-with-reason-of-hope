@@ -8,12 +8,12 @@ export default function UserPage() {
   const token = searchParam.get("token");
   const action = searchParam.get("action");
 
- 
+
   if (action === "activate_new_user") {
     return (
       <>
         <div>Activate New User</div>
-    
+
         <ActivationForm action={activateUser} token={token} />
       </>
     );
