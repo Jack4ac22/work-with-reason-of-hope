@@ -121,7 +121,7 @@ export default function ReCaptcha({ onVerified, action }) {
                   onChange={(e) => setUserAnswer(e.target.value)}
                   placeholder="Answer"
                   required
-                  className="p-2 text-base border rounded w-full"
+                  className={`p-2 text-base border rounded w-full ${error ? "border-red-500" : ""}`}
                 />
               </div>
               <div className="mt-4">

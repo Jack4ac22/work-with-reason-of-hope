@@ -97,15 +97,15 @@ This web application serves as a platform for volunteers to translate Biblical m
 
 ---
 
+## Translation Process Design
 
-# Translation Process Design
-
-## Overview
+**Overview**
 The platform supports translatable content across several categories (e.g., events, people, places, dictionaries, systematic theology, quiz). Each category is maintained in its own table, with Bible verses stored in a shared table and junction (conjunction) tables used to link related data (e.g., related places or events).
 
-## Workflow
+## #Workflow
 
 ### 1. Item Creation
+
 - **Roles:**  
   - Editors (and Admins) have the permission to insert new translatable items.
   - Access to item creation may be selectively restricted based on additional permissions.
@@ -115,6 +115,7 @@ The platform supports translatable content across several categories (e.g., even
   - Items contain both translatable and non-translatable fields as defined in the schema.
 
 ### 2. Translation Submission
+
 - **Drafting:**  
   - Translators work on the entire item via a dashboard interface, saving their work as a draft.
   
@@ -127,6 +128,7 @@ The platform supports translatable content across several categories (e.g., even
   - If a translator retracts their translation, the old version is rejected and replaced by the new submission—resetting any previously cast votes.
 
 ### 3. Proofreading & Evaluation
+
 - **Review Process:**  
   - Proofreaders evaluate translated fields by assigning a star rating (1 to 5 stars) for each field and an overall rating.
   - They can also optionally provide free-form comments for additional feedback.
@@ -136,6 +138,7 @@ The platform supports translatable content across several categories (e.g., even
   - The editor reviews the aggregated ratings and comments, then approves the translation, returns it to draft with feedback, or rejects it.
 
 ### 4. Reporting and Editorial Action
+
 - **Item Reporting:**  
   - A dedicated reporting endpoint allows users to flag an item by specifying the relevant table, fields, and a comment.
   - Editors use these reports to decide if an item should be moved from its current status (e.g., published) to another state (e.g., under investigation) or if enhancements are needed.
@@ -155,6 +158,7 @@ The platform supports translatable content across several categories (e.g., even
   - The editor holds the final authority to change the status based on the review process and report findings.
 
 ### 5. Notifications
+
 - **Internal Alerts:**  
   - An internal notifications table will store system alerts that are visible when users log in.
   - Email notifications can be integrated in a later phase.
