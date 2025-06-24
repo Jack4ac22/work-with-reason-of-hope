@@ -1,16 +1,23 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Markazi_Text, Roboto } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const markazi_text = Markazi_Text(
+  {
+    weight: ['400', '500', '600', '700'],
+    subsets: ['arabic'],
+    display: 'swap',
+  }
+);
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const roboto = Roboto(
+  {
+    weight: ['100', '300', '400', '500', '700'],
+    subsets: ['latin'],
+    display: 'swap',
+  }
+);
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`scroll-smooth ${markazi_text.className} antialiased font-sans`}
       >
         {children}
       </body>

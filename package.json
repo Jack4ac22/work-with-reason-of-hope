@@ -6,22 +6,37 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "inngest": "inngest-cli dev -u http://localhost:3000/api/inngest",
+    "email": "email dev --dir src/services/resend/components --port 3001"
   },
   "dependencies": {
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@t3-oss/env-nextjs": "^0.13.8",
+    "drizzle-orm": "^0.44.2",
+    "mysql2": "^3.13.0",
+    "next": "15.4.0-canary.92",
+    "pg": "^8.16.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.4.0-canary.92"
+    "zod": "^3.25.67"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/mysql": "^2.15.27",
     "@types/node": "^20",
+    "@types/pg": "^8.15.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "drizzle-kit": "^0.31.1",
     "eslint": "^9",
     "eslint-config-next": "15.4.0-canary.92",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
