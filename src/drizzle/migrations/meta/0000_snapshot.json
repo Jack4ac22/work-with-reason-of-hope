@@ -1,5 +1,5 @@
 {
-  "id": "b8575532-a9f4-49de-aa13-c09cb599e13c",
+  "id": "aeb67b4d-86bb-4b81-8e88-a093c8998552",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,26 +10,25 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
-          "type": "varchar",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
-        "imageUrl": {
-          "name": "imageUrl",
-          "type": "varchar",
+        "image_url": {
+          "name": "image_url",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
         "email": {
           "name": "email",
-          "type": "varchar",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -70,9 +69,9 @@
       "columns": {
         "userId": {
           "name": "userId",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
         },
         "newJobEmailNotifications": {
           "name": "newJobEmailNotifications",

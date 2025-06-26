@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1750718032073,
-      "tag": "0000_natural_dreaming_celestial",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1750924295714,
-      "tag": "0001_even_taskmaster",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1750924690885,
-      "tag": "0002_spicy_mother_askani",
+      "when": 1750926173427,
+      "tag": "0000_funny_nightmare",
       "breakpoints": true
     }
   ]

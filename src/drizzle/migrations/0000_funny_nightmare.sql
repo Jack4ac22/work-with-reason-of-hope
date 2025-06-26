@@ -1,15 +1,15 @@
 CREATE TABLE "users" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" varchar NOT NULL,
-	"imageUrl" varchar NOT NULL,
-	"email" varchar NOT NULL,
+	"id" varchar PRIMARY KEY NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"image_url" varchar(255) NOT NULL,
+	"email" varchar(255) NOT NULL,
 	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
 	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 CREATE TABLE "user_notification_settings" (
-	"userId" uuid,
+	"userId" varchar PRIMARY KEY NOT NULL,
 	"newJobEmailNotifications" boolean DEFAULT false NOT NULL,
 	"aiPrompt" varchar,
 	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
