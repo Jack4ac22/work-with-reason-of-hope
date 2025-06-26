@@ -1,12 +1,12 @@
 // src/drizzle/schema/user.ts
 
 import { pgTable, varchar } from "drizzle-orm/pg-core"
-import { createdAt, updatedAt, id } from "../schemaHelpers"
+import { createdAt, updatedAt } from "../schemaHelpers"
 import { relations } from "drizzle-orm"
 import { UserNotificationSettingsTable } from "@/drizzle/schema/userNotificationSettings"
 
 export const UserTable = pgTable("users", {
-  id,
+  id: varchar().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   imageUrl: varchar("image_url", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
