@@ -7,14 +7,15 @@ import { UserNotificationSettingsTable } from "@/drizzle/schema/userNotification
 
 export const UserTable = pgTable("users", {
   id,
-  name: varchar().notNull(),
-  imageUrl: varchar().notNull(),
-  email: varchar().notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
+  imageUrl: varchar("image_url", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
   createdAt,
   updatedAt,
-})
+});
 
-export const userRelations = relations(UserTable, ({ one, many }) => ({
+
+export const userRelations = relations(UserTable, ({ one }) => ({
   notificationSettings: one(UserNotificationSettingsTable),
 }))
 

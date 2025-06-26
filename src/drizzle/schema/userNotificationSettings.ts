@@ -54,5 +54,5 @@ export const userNotificationSettingsRelations = relations(
 //       fields: [UserNotificationSettingsTable.userId],
 //       references: [UserTable.id],
 //     }),
-//   }),
-// );
+//   })
+// )
